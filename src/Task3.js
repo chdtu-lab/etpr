@@ -13,6 +13,7 @@ import FormControl from '@material-ui/core/FormControl';
 import MenuItem from '@material-ui/core/MenuItem';
 import InputLabel from '@material-ui/core/InputLabel';
 import Graph from "react-graph-vis";
+import {product} from "iter-tools/es2015";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -49,29 +50,36 @@ function Task3() {
   const classes = useStyles();
   const [array, setArray] = useState([]);
   const [graph, setGraph] = useState(initialGraph);
-  const [result, setResult] = useState([]);
+  const [matrix, setMatrix] = useState([]);
+  const [binaryRelation, setBinaryRelation] = useState([]);
   const [comparator, setComparator] = React.useState('eq');
   const [debouncedCallback1] = useDebouncedCallback(value => {
     setArray(value.split(',').map(Number));
   },1000);
   
   useEffect(() => {
+    setBinaryRelation(createBinaryRelation(array, comparator));
     const zeroArray = fill(Array(array.length + 1), 0);
     const zeroMatrix = clone(zeroArray.map(() => zeroArray));
     const filledMatrix = fillMatrix(zeroMatrix, comparator);
     const matrixWithTitle = addTitleToMatrix(filledMatrix, array)
-    setResult(matrixWithTitle);
+    setMatrix(matrixWithTitle);
     const graph = generateGraph(matrixWithTitle, array);
     setGraph(graph);
   }, [comparator, array]);
   
-  const clone = (items) => items.map(item => Array.isArray(item) ? clone(item) : item);
-  
-  const events = {
-    select: function(event) {
-      let { nodes, edges } = event;
+  const createBinaryRelation = (array, comparator) => {
+    const bR = [];
+    const cartesianProduct = Array.from(product(array, array));
+    for (let i = 0; i < cartesianProduct.length; i++) {
+      if (comparators[comparator](cartesianProduct[i][0],cartesianProduct[i][1])) {
+        bR.push(cartesianProduct[i]);
+      }
     }
-  };
+    return bR;
+  }
+  
+  const clone = (items) => items.map(item => Array.isArray(item) ? clone(item) : item);
   
   const fillMatrix = (zeroMatrix, comparator) => {
     for (let i = 0; i < zeroMatrix.length; i++) {
@@ -139,9 +147,10 @@ function Task3() {
           <MenuItem value={'gte'}>не менше</MenuItem>
         </Select>
       </FormControl>
+      <p className="m-3">Бінарне відношення:  {binaryRelation.map(a => a.join(', ')).map(a => `(${a})`).join(', ')}</p>
       <p className="m-3">Бінарне відношення у матричному вигляді:</p>
       <div className="m-3">
-        {result.map((row, i) => (
+        {matrix.map((row, i) => (
           <div key={i}>
             {row.map((col, j) => (
               <span key={j}>{col} {" "}</span>
@@ -152,10 +161,8 @@ function Task3() {
       <p className="m-3">Бінарне відношення у вигляді орієнтованого графа:</p>
       <div className="m-3">
         <Graph
-          className="m-3"
           graph={graph}
           options={options}
-          events={events}
         />
       </div>
     </>

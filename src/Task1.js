@@ -24,7 +24,6 @@ function Task1() {
   const [debouncedCallback2] = useDebouncedCallback(value => setValue2(value.split(',').map(Number)),1000);
   useEffect(() => {
     setResult(Array.from(product(value1, value2)));
-    console.log(Array.from(product(value1, value2)));
   }, [value1, value2]);
   
   return (
