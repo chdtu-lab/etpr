@@ -14,6 +14,8 @@ import MenuItem from '@material-ui/core/MenuItem';
 import InputLabel from '@material-ui/core/InputLabel';
 import Graph from "react-graph-vis";
 import {product} from "iter-tools/es2015";
+import 'katex/dist/katex.min.css';
+import TeX from '@matejmazur/react-katex';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -139,12 +141,24 @@ function Task3() {
           value={comparator}
           onChange={handleChange}
         >
-          <MenuItem value={'eq'}>дорівнює</MenuItem>
-          <MenuItem value={'neq'}>не дорівнює</MenuItem>
-          <MenuItem value={'gt'}>більше</MenuItem>
-          <MenuItem value={'lt'}>менше</MenuItem>
-          <MenuItem value={'lte'}>не більше</MenuItem>
-          <MenuItem value={'gte'}>не менше</MenuItem>
+          <MenuItem value={'eq'}>
+            <TeX className="mr-1" math="R_{x=y}"/>- дорівнює
+          </MenuItem>
+          <MenuItem value={'neq'}>
+            <TeX className="mr-1" math="R_{x \neq y}"/>- не дорівнює
+          </MenuItem>
+          <MenuItem value={'gt'}>
+            <TeX className="mr-1" math="R_{x > y}"/>- більше
+          </MenuItem>
+          <MenuItem value={'lt'}>
+            <TeX className="mr-1" math="R_{x < y}"/>- менше
+          </MenuItem>
+          <MenuItem value={'lte'}>
+            <TeX className="mr-1" math="R_{x \leq y}"/>- не більше
+          </MenuItem>
+          <MenuItem value={'gte'}>
+            <TeX className="mr-1" math="R_{x \geq y}"/>- не менше
+          </MenuItem>
         </Select>
       </FormControl>
       <p className="m-3">Бінарне відношення:  {binaryRelation.map(a => a.join(', ')).map(a => `(${a})`).join(', ')}</p>
