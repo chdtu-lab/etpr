@@ -7,8 +7,12 @@ import AppBar from '@material-ui/core/AppBar';
 import './assets/main.css';
 import Task1 from "./Task1";
 import Task3 from "./Task3";
-import TabPanel from "./TabPanel";
+import TabPanel from "./UI/TabPanel";
 import MyReactComponent from "./MyReactComponent";
+import DMTask1 from "./discrete-mathematics/DMTask1";
+import SetCalculator from "./discrete-mathematics/SetCalculator";
+import SimpleExpansionPanel from "./UI/SimpleExpansionPanel";
+import Info from "./discrete-mathematics/Info";
 
 function a11yProps(index) {
   return {
@@ -36,6 +40,11 @@ function App() {
         <Task3/>
       </TabPanel>
       <TabPanel value={value} index={1}>
+        <SimpleExpansionPanel>
+          <Info/>
+        </SimpleExpansionPanel>
+        <SetCalculator/>
+        <DMTask1/>
         <MyReactComponent/>
       </TabPanel>
     </>

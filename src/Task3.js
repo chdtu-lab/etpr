@@ -50,7 +50,7 @@ function Task3() {
   };
   
   const classes = useStyles();
-  const [array, setArray] = useState([]);
+  const [array, setArray] = useState([0, 1, 2, 3, 4]);
   const [graph, setGraph] = useState(initialGraph);
   const [matrix, setMatrix] = useState([]);
   const [binaryRelation, setBinaryRelation] = useState([]);
@@ -131,7 +131,12 @@ function Task3() {
     <>
       <p className="m-3">1.3</p>
       <form className={classes.root} noValidate autoComplete="off">
-        <TextField id="standard-basic" label="X1"  onChange={e => debouncedCallback1(e.target.value)} />
+        <TextField
+          id="standard-basic"
+          label="X1"
+          defaultValue={array}
+          onChange={e => debouncedCallback1(e.target.value)}
+        />
       </form>
       <FormControl className={classes.formControl}>
         <InputLabel id="demo-simple-select-label">Відношення</InputLabel>

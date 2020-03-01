@@ -11,14 +11,12 @@ const useStyles = makeStyles(theme => ({
       width: 200,
     },
   },
-  task1: {
-  }
 }));
 
 function Task1() {
   const classes = useStyles();
-  const [value1, setValue1] = useState([]);
-  const [value2, setValue2] = useState([]);
+  const [value1, setValue1] = useState([0, 1, 2, 3, 4]);
+  const [value2, setValue2] = useState([0, 1, 2, 3, 4]);
   const [result, setResult] = useState([]);
   const [debouncedCallback1] = useDebouncedCallback(value => setValue1(value.split(',').map(Number)),1000);
   const [debouncedCallback2] = useDebouncedCallback(value => setValue2(value.split(',').map(Number)),1000);
@@ -28,13 +26,24 @@ function Task1() {
   
   return (
     <>
-      <div className="m-3">Example: 0, 1, 2, 3, 4</div>
       <div className="m-3">1.1</div>
       <form className={classes.root} noValidate autoComplete="off">
-        <TextField id="standard-basic" label="X1"  onChange={e => debouncedCallback1(e.target.value)} />
-        <TextField id="standard-basic" label="X2"  onChange={e => debouncedCallback2(e.target.value)} />
+        <TextField
+          id="standard-basic"
+          label="X1"
+          defaultValue={value1}
+          onChange={e => debouncedCallback1(e.target.value)}
+        />
+        <TextField
+          id="standard-basic"
+          label="X2"
+          defaultValue={value2}
+          onChange={e => debouncedCallback2(e.target.value)}
+        />
       </form>
-      <p className="m-3">Декартовий добуток: {result.map(a => a.join(', ')).map(a => `(${a})`).join(', ')}</p>
+      <p className="m-3">
+        Декартовий добуток: {result.map(a => a.join(', ')).map(a => `(${a})`).join(', ')}
+      </p>
     </>
   );
 }
