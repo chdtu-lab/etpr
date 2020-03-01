@@ -5,8 +5,8 @@ import Tab from '@material-ui/core/Tab';
 import AppBar from '@material-ui/core/AppBar';
 
 import './assets/main.css';
-import Task1 from "./Task1";
-import Task3 from "./Task3";
+import Task1 from "./ETPR/Task1";
+import Task3 from "./ETPR/Task3";
 import TabPanel from "./UI/TabPanel";
 import MyReactComponent from "./MyReactComponent";
 import DMTask1 from "./discrete-mathematics/DMTask1";
