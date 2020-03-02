@@ -9,6 +9,7 @@ import MenuItem from "@material-ui/core/MenuItem";
 import TeX from "@matejmazur/react-katex";
 import Zet from "zet";
 import SelectableVenn from "./Venn/SelectableVenn";
+import SelectableVennClass from "./Venn/SelectableVennClass";
 
 const useStyles = makeStyles(theme => ({
   root: {
