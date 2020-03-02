@@ -4,14 +4,18 @@ import Info from "./Info";
 import SetCalculator from "./SetCalculator";
 import DMTask1 from "./DMTask1";
 import SelectableVenn from "./SelectableVenn";
-import SimpleVenn from "./SimpleVenn";
+// import SimpleVenn from "./SimpleVenn";
+import SelectableVennClass from "./SelectableVennClass";
 
 export default function DM() {
   const sets2 = [
-    { "sets": [0], "size": 12, "label": "A" },
-    { "sets": [1], "size": 12, "label": "B" },
-    { "sets": [0, 1], "size": 2 },
+    { "sets": ["A"], "size": 12, "label": "A" },
+    { "sets": ["B"], "size": 12, "label": "B" },
+    { "sets": ['A', "B"], "size": 2 },
   ];
+  
+  // const selectors2 = ['(A∩B)', String.raw`(B)\(A∩B)`, String.raw`(A)\(A∩B)`];
+  const selectors2 = ['(A∩B)'];
   
   const sets3 = [
     { "sets": [0], "size": 12, "label": "A" },
@@ -30,9 +34,9 @@ export default function DM() {
       </SimpleExpansionPanel>
       <SetCalculator/>
       <DMTask1/>
-      <SelectableVenn sets={sets2}/>
+      <SelectableVennClass sets={sets2} selectors={selectors2}/>
       <SelectableVenn sets={sets3}/>
-      <SimpleVenn/>
+      {/*<SimpleVenn/>*/}
     </>
   );
 }

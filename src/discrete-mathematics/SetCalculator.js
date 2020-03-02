@@ -8,6 +8,8 @@ import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import TeX from "@matejmazur/react-katex";
 import Zet from "zet";
+import SelectableVenn from "./SelectableVenn";
+import SelectableVennClass from "./SelectableVennClass";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -24,14 +26,27 @@ const useStyles = makeStyles(theme => ({
 
 export default function SetCalculator() {
   const classes = useStyles();
+  const operationsSelector = {
+    union: ['(A∩B)', String.raw`(B)\(A∩B)`, String.raw`(A)\(A∩B)`],
+    intersection: ['(A∩B)'],
+    difference: [String.raw`(A)\(A∩B)`],
+  }
+  const sets = [
+    { "sets": ["A"], "size": 12, "label": "A" },
+    { "sets": ["B"], "size": 12, "label": "B" },
+    { "sets": ['A', "B"], "size": 2 },
+  ];
+  
   const [valueA1, setValueA1] = useState([1, 2, 3]);
   const [valueB1, setValueB1] = useState([3, 5, 1]);
   const [resultC, setResultC] = useState('');
   const [operation, setOperation] = useState('union');
+  const [selectors, setSelectors] = useState(operationsSelector[operation]);
   
   useEffect(() => {
     const A1 = new Zet(valueA1);
     const B1 = new Zet(valueB1);
+    setSelectors(operationsSelector[operation]);
     setResultC(setToString(A1[operation](B1)));
   }, [valueA1, valueB1, operation]);
   
@@ -76,6 +91,8 @@ export default function SetCalculator() {
         />
       </form>
       <div>{resultC}</div>
+      <SelectableVenn sets={sets} selectors={selectors}/>
+      {/*<SelectableVennClass sets={sets} selectors={selectors}/>*/}
     </div>
   );
 }
