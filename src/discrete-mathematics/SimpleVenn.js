@@ -1,9 +1,8 @@
 import React from 'react'
 import * as d3 from 'd3'
-import {withFauxDOM} from 'react-faux-dom'
 import * as venn from 'venn.js'
 
-class MyReactComponent extends React.Component {
+class SimpleVenn extends React.Component {
   sets = [
     {sets: ['A'], size: 12},
     {sets: ['B'], size: 12},
@@ -15,24 +14,20 @@ class MyReactComponent extends React.Component {
   chart = venn.VennDiagram();
   
   componentDidMount () {
-    const faux = this.props.connectFauxDOM('div', 'chart');
-    d3.select(faux).datum(this.sets).call(this.chart);
-    this.props.animateFauxDOM(800)
+    d3.select(this.svg).datum(this.sets).call(this.chart);
   }
   
   render () {
     return (
       <>
-        <div className='renderedD3'>
-          {this.props.chart}
-        </div>
+        <div ref={ svg => this.svg = svg }/>
       </>
     )
   }
 }
 
-MyReactComponent.defaultProps = {
+SimpleVenn.defaultProps = {
   chart: 'loading'
 }
 
-export default withFauxDOM(MyReactComponent)
+export default SimpleVenn

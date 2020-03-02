@@ -8,11 +8,12 @@ import './assets/main.css';
 import Task1 from "./ETPR/Task1";
 import Task3 from "./ETPR/Task3";
 import TabPanel from "./UI/TabPanel";
-import MyReactComponent from "./MyReactComponent";
+import SimpleVenn from "./discrete-mathematics/SimpleVenn";
 import DMTask1 from "./discrete-mathematics/DMTask1";
 import SetCalculator from "./discrete-mathematics/SetCalculator";
 import SimpleExpansionPanel from "./UI/SimpleExpansionPanel";
 import Info from "./discrete-mathematics/Info";
+import SelectableVenn from "./discrete-mathematics/SelectableVenn";
 
 function a11yProps(index) {
   return {
@@ -22,7 +23,7 @@ function a11yProps(index) {
 }
 
 function App() {
-  const [value, setValue] = React.useState(0);
+  const [value, setValue] = React.useState(1);
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -45,7 +46,8 @@ function App() {
         </SimpleExpansionPanel>
         <SetCalculator/>
         <DMTask1/>
-        <MyReactComponent/>
+        <SelectableVenn/>
+        <SimpleVenn/>
       </TabPanel>
     </>
   );
