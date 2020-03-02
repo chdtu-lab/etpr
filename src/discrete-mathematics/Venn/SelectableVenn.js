@@ -129,13 +129,12 @@ export default function SelectableVenn(props) {
   }
   
   const clear = () => {
-    d3.select(node).selectAll("g").classed("selected", false);
-    d3.select(node).selectAll("path").attr("style", "fill: #ffffff");
+    d3.select(nodeRef).selectAll("g").classed("selected", false);
+    d3.select(nodeRef).selectAll("path").attr("style", "fill: #ffffff");
   }
   
   const selectNode = DOMnode => {
     let node = d3.select(DOMnode);
-    setNode(node);
     let nodePath = node.select("path");
     let nodeAlreadySelected = node.classed("selected");
     let nodePathStyle = (!nodeAlreadySelected ? "fill: url(#diagonal0)" : "fill: #ffffff");
@@ -155,7 +154,7 @@ export default function SelectableVenn(props) {
   }
   
   const [svg, setSVG] = useState(null);
-  const [node, setNode] = useState(null);
+  const [nodeRef, setNodeRef] = useState(null);
   
   const measuredRef = useCallback(node => {
     if (node !== null) {
@@ -163,6 +162,7 @@ export default function SelectableVenn(props) {
       const div = d3.select(node).datum(props.sets).call(chart);
       const svg = div.select("svg");
       setSVG(svg);
+      setNodeRef(node);
       const defs = svg.append("defs");
       const labels = div.selectAll("text").remove();
   
