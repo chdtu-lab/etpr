@@ -3,9 +3,9 @@ import SimpleExpansionPanel from "../UI/SimpleExpansionPanel";
 import Info from "./Info";
 import SetCalculator from "./SetCalculator";
 import DMTask1 from "./DMTask1";
-import SelectableVenn from "./SelectableVenn";
+import SelectableVenn from "./Venn/SelectableVenn";
 // import SimpleVenn from "./SimpleVenn";
-import SelectableVennClass from "./SelectableVennClass";
+import SelectableVennClass from "./Venn/SelectableVennClass";
 
 export default function DM() {
   const sets2 = [

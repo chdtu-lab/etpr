@@ -8,8 +8,7 @@ import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import TeX from "@matejmazur/react-katex";
 import Zet from "zet";
-import SelectableVenn from "./SelectableVenn";
-import SelectableVennClass from "./SelectableVennClass";
+import SelectableVenn from "./Venn/SelectableVenn";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -92,7 +91,6 @@ export default function SetCalculator() {
       </form>
       <div>{resultC}</div>
       <SelectableVenn sets={sets} selectors={selectors}/>
-      {/*<SelectableVennClass sets={sets} selectors={selectors}/>*/}
     </div>
   );
 }
