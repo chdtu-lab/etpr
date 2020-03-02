@@ -8,12 +8,7 @@ import './assets/main.css';
 import Task1 from "./ETPR/Task1";
 import Task3 from "./ETPR/Task3";
 import TabPanel from "./UI/TabPanel";
-import SimpleVenn from "./discrete-mathematics/SimpleVenn";
-import DMTask1 from "./discrete-mathematics/DMTask1";
-import SetCalculator from "./discrete-mathematics/SetCalculator";
-import SimpleExpansionPanel from "./UI/SimpleExpansionPanel";
-import Info from "./discrete-mathematics/Info";
-import SelectableVenn from "./discrete-mathematics/SelectableVenn";
+import DM from "./discrete-mathematics/DM";
 
 function a11yProps(index) {
   return {
@@ -41,13 +36,7 @@ function App() {
         <Task3/>
       </TabPanel>
       <TabPanel value={value} index={1}>
-        <SimpleExpansionPanel>
-          <Info/>
-        </SimpleExpansionPanel>
-        <SetCalculator/>
-        <DMTask1/>
-        <SelectableVenn/>
-        <SimpleVenn/>
+        <DM/>
       </TabPanel>
     </>
   );

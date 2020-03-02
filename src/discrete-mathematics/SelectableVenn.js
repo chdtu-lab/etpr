@@ -1,19 +1,10 @@
-import React from 'react'
+import React, {useCallback} from 'react'
 import * as d3 from 'd3'
 import * as venn from 'venn.js'
 
-class SelectableVenn extends React.Component {
-  sets = [
-    { "sets": [0], "size": 12, "label": "A" },
-    { "sets": [1], "size": 12, "label": "B" },
-    { "sets": [2], "size": 12, "label": "C" },
-    { "sets": [0, 1], "size": 2 },
-    { "sets": [0, 2], "size": 2 },
-    { "sets": [1, 2], "size": 2 },
-    { "sets": [0, 1, 2], "size": 2 }
-  ];
+export default function SelectableVenn(props) {
   
-  getIntersectionAreasMapping() {
+  const getIntersectionAreasMapping = () => {
     let intersectionAreasMapping = {};
     let vennAreas = d3.selectAll(".venn-area");
     vennAreas.each((areaData, areaIdx, areas) => {
@@ -49,18 +40,18 @@ class SelectableVenn extends React.Component {
     return intersectionAreasMapping;
   }
   
-  appendVennAreaParts(svg, intersectionAreasMapping) {
+  const appendVennAreaParts = (svg, intersectionAreasMapping) => {
     for (let areaSetsId in intersectionAreasMapping) {
       let intersectionAreasItem = intersectionAreasMapping[areaSetsId];
       let vennArea = intersectionAreasItem.vennArea;
       let intersectedAreas = intersectionAreasItem.intersectedAreas;
-      let partId = this.getPartId(vennArea, intersectedAreas);
+      let partId = getPartId(vennArea, intersectedAreas);
       let d = [vennArea.d].concat(intersectedAreas.map(intersectedArea => intersectedArea.d));
-      this.appendVennAreaPart(svg, d.join(""), partId);
+      appendVennAreaPart(svg, d.join(""), partId);
     }
   }
   
-  appendLabels(svg, labels) {
+  const appendLabels = (svg, labels) => {
     labels.nodes().forEach(label => {
       svg.append(function() {
         return label;
@@ -68,7 +59,7 @@ class SelectableVenn extends React.Component {
     });
   }
   
-  appendVennAreaPart(svg, d, partId) {
+  const appendVennAreaPart = (svg, d, partId) => {
     svg.append("g")
       .attr("class", "venn-area-part")
       .attr("venn-area-part-id", partId)
@@ -77,7 +68,7 @@ class SelectableVenn extends React.Component {
       .attr("fill-rule", "evenodd");
   }
   
-  appendPatterns(defs) {
+  const appendPatterns = (defs) => {
     let colors = ["none", "#009fdf"];
     colors.forEach((color, idx) => {
       let diagonal = defs.append("pattern")
@@ -100,16 +91,16 @@ class SelectableVenn extends React.Component {
     })
   }
   
-  getPartId(vennArea, intersectedAreas) {
+  const getPartId = (vennArea, intersectedAreas) => {
     let partId = "(" + vennArea.sets.join("∩") + ")";
     partId += intersectedAreas.length > 1 ? "\\(" : "";
-    partId += intersectedAreas.length == 1 ? "\\" : "";
+    partId += intersectedAreas.length === 1 ? "\\" : "";
     partId += intersectedAreas.map(intersectedArea => intersectedArea.sets).map(set => "(" + set.join("∩") + ")").join("∪");
     partId += intersectedAreas.length > 1 ? ")" : "";
     return partId;
   }
   
-  bindVennAreaPartListeners(div) {
+  const bindVennAreaPartListeners = (div) => {
     div.selectAll("g")
       .on("mouseover", function(d, i) {
         let node = d3.select(this);
@@ -133,37 +124,35 @@ class SelectableVenn extends React.Component {
       });
   }
   
-  removeOriginalVennAreas() {
+  const removeOriginalVennAreas = () => {
     d3.selectAll("g.venn-area").remove();
   }
   
-  componentDidMount () {
-    const chart = venn.VennDiagram();
-    const div = d3.select(this.div).datum(this.sets).call(chart);
-    const svg = div.select("svg");
-    const defs = svg.append("defs");
-    const labels = div.selectAll("text").remove();
+  const measuredRef = useCallback(node => {
+    if (node !== null) {
+      const chart = venn.VennDiagram();
+      const div = d3.select(node).datum(props.sets).call(chart);
+      const svg = div.select("svg");
+      const defs = svg.append("defs");
+      const labels = div.selectAll("text").remove();
   
-    this.appendPatterns(defs);
-    this.intersectionAreasMapping = this.getIntersectionAreasMapping();
-    this.appendVennAreaParts(svg, this.intersectionAreasMapping);
-    this.appendLabels(svg, labels);
-    this.bindVennAreaPartListeners(div);
-    this.removeOriginalVennAreas();
-  }
+      appendPatterns(defs);
+      const intersectionAreasMapping = getIntersectionAreasMapping();
+      appendVennAreaParts(svg, intersectionAreasMapping);
+      appendLabels(svg, labels);
+      bindVennAreaPartListeners(div);
+      removeOriginalVennAreas();
+    }
+  }, []);
   
-  render () {
-    return (
-      <>
-        <div id="venn" ref={ div => this.div = div }>
-        </div>
-      </>
-    )
-  }
+  return (
+    <>
+      <div id="venn" ref={measuredRef}>
+      </div>
+    </>
+  )
 }
 
 SelectableVenn.defaultProps = {
   chart: 'loading'
 }
-
-export default SelectableVenn
