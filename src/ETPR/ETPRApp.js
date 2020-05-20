@@ -4,11 +4,12 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import AppBar from '@material-ui/core/AppBar';
 
-import TabPanel from "./UI/TabPanel";
-import './assets/main.css';
+import TabPanel from "../UI/TabPanel";
 
-import DM from "./discrete-mathematics/DM";
-import ETPRApp from "./ETPR/ETPRApp";
+import Task1 from "./Task1";
+import Task3 from "./Task3";
+import Lab3 from "./Lab3";
+
 
 function a11yProps(index) {
   return {
@@ -17,8 +18,8 @@ function a11yProps(index) {
   };
 }
 
-function App() {
-  const [value, setValue] = React.useState(0);
+function ETPRApp() {
+  const [value, setValue] = React.useState(1);
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -27,18 +28,19 @@ function App() {
     <>
       <AppBar position="static">
         <Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
-          <Tab label="ЕТПР" {...a11yProps(0)} />
-          <Tab label="Дискретна математика" {...a11yProps(1)} />
+          <Tab label="Л1" {...a11yProps(0)} />
+          <Tab label="Л3" {...a11yProps(1)} />
         </Tabs>
       </AppBar>
       <TabPanel value={value} index={0}>
-        <ETPRApp/>
+        <Task1/>
+        <Task3/>
       </TabPanel>
       <TabPanel value={value} index={1}>
-        <DM/>
+        <Lab3/>
       </TabPanel>
     </>
   );
 }
 
-export default App;
+export default ETPRApp;
