@@ -134,7 +134,7 @@ function Lab3() {
         <div>
           <TextField
             id="standard-multiline-flexible"
-            label="Multiline"
+            label="Inequalities"
             multiline
             defaultValue={rawInequalities}
             rowsMax={7}
@@ -146,7 +146,9 @@ function Lab3() {
                      onChange={e => updateXIdentifiersReplacement(x, e.target.value)}
           />
         )}
-        <TextField id="standard-basic" label="Comarators" onChange={e => updateRawComparators(e.target.value)}/>
+        <div>
+          <TextField id="standard-basic" label="Comarators" onChange={e => updateRawComparators(e.target.value)}/>
+        </div>
       </form>
       {replacedExpressions.map((expression, index) =>
         <div key={index}>{expression} {rawComparators.length ? String(evaluate(expression)) : ''}</div>
