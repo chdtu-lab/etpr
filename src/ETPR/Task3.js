@@ -16,6 +16,7 @@ import Graph from "react-graph-vis";
 import {product} from "iter-tools/es2015";
 import 'katex/dist/katex.min.css';
 import TeX from '@matejmazur/react-katex';
+import {bool} from "prop-types";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -54,13 +55,18 @@ function Task3() {
   const [graph, setGraph] = useState(initialGraph);
   const [matrix, setMatrix] = useState([]);
   const [binaryRelation, setBinaryRelation] = useState([]);
+  const [additionBinaryRelation, setAdditionBinaryRelation] = useState([]);
   const [comparator, setComparator] = React.useState('eq');
   const [debouncedCallback1] = useDebouncedCallback(value => {
     setArray(value.split(',').map(Number));
   },1000);
-  
+
+  const not = (bool) => !bool;
+  const is = (bool) => bool;
+
   useEffect(() => {
-    setBinaryRelation(createBinaryRelation(array, comparator));
+    setBinaryRelation(createBinaryRelation(array, is, comparator));
+    setAdditionBinaryRelation(createBinaryRelation(array, not, comparator));
     const zeroArray = fill(Array(array.length + 1), 0);
     const zeroMatrix = clone(zeroArray.map(() => zeroArray));
     const filledMatrix = fillMatrix(zeroMatrix, comparator);
@@ -70,11 +76,11 @@ function Task3() {
     setGraph(graph);
   }, [comparator, array]);
   
-  const createBinaryRelation = (array, comparator) => {
+  const createBinaryRelation = (array, predicate, comparator) => {
     const bR = [];
     const cartesianProduct = Array.from(product(array, array));
     for (let i = 0; i < cartesianProduct.length; i++) {
-      if (comparators[comparator](cartesianProduct[i][0],cartesianProduct[i][1])) {
+      if (predicate(comparators[comparator](cartesianProduct[i][0],cartesianProduct[i][1]))) {
         bR.push(cartesianProduct[i]);
       }
     }
@@ -167,6 +173,7 @@ function Task3() {
         </Select>
       </FormControl>
       <p className="m-3">Бінарне відношення:  {binaryRelation.map(a => a.join(', ')).map(a => `(${a})`).join(', ')}</p>
+      <p className="m-3">Доповнення до бынарного відношення:  {additionBinaryRelation.map(a => a.join(', ')).map(a => `(${a})`).join(', ')}</p>
       <p className="m-3">Бінарне відношення у матричному вигляді:</p>
       <div className="m-3">
         {matrix.map((row, i) => (
