@@ -5,17 +5,12 @@ import TextField from "@material-ui/core/TextField";
 import {makeStyles} from "@material-ui/core/styles";
 
 import fill from 'lodash/fill';
-import lt from 'lodash/lt';
-import lte from 'lodash/lte';
-import gte from 'lodash/gte';
-import gt from 'lodash/gt';
-import eq from 'lodash/eq';
-
 import Graph from "react-graph-vis";
 import {product} from "iter-tools/es2015";
 import 'katex/dist/katex.min.css';
 import RelationSelector from "./RelationSelector";
 import MatrixTable from "./MatrixTable";
+import {comparatorsObj} from "./comparators";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -32,14 +27,6 @@ const useStyles = makeStyles(theme => ({
 }));
 
 function Task3() {
-  const comparators = {
-    'eq': eq,
-    'neq': (a, b) => !eq(a, b),
-    'gt': gt,
-    'lt': lt,
-    'lte': lte,
-    'gte': gte,
-  }
   const options = {
     height: "350px",
     width: "500px"
@@ -59,8 +46,8 @@ function Task3() {
   const [additionBinaryRelation, setAdditionBinaryRelation] = useState([]);
   const [reverseBinaryRelation, setReverseBinaryRelation] = useState([]);
   const [dualBinaryRelation, setDualBinaryRelation] = useState([]);
-  const [comparator, setComparator] = React.useState('eq');
-  const [secondComparator, setSecondComparator] = React.useState('eq');
+  const [comparator, setComparator] = React.useState(comparatorsObj.eq);
+  const [secondComparator, setSecondComparator] = React.useState(comparatorsObj.eq);
   const [debouncedCallback1] = useDebouncedCallback(value => {
     setArray(value.split(',').map(Number));
   }, 1000);
@@ -70,13 +57,13 @@ function Task3() {
   const clone = (items) => items.map(item => Array.isArray(item) ? clone(item) : item);
 
   useEffect(() => {
-    setBinaryRelation(createBinaryRelation(array, is, comparator, false));
-    setAdditionBinaryRelation(createBinaryRelation(array, not, comparator, false));
-    setReverseBinaryRelation(createBinaryRelation(array, is, comparator, true));
-    setDualBinaryRelation(createBinaryRelation(array, not, comparator, true));
+    setBinaryRelation(createBinaryRelation(array, is, comparator.value, false));
+    setAdditionBinaryRelation(createBinaryRelation(array, not, comparator.value, false));
+    setReverseBinaryRelation(createBinaryRelation(array, is, comparator.value, true));
+    setDualBinaryRelation(createBinaryRelation(array, not, comparator.value, true));
     const zeroArray = fill(Array(array.length), 0);
     const zeroMatrix = clone(zeroArray.map(() => zeroArray));
-    const filledMatrix = fillMatrix(zeroMatrix, comparator);
+    const filledMatrix = fillMatrix(zeroMatrix, comparator.value);
     setMatrix(filledMatrix);
     const graph = generateGraph(filledMatrix, array);
     setGraph(graph);
@@ -85,7 +72,7 @@ function Task3() {
   useEffect(() => {
     const zeroArray = fill(Array(array.length), 0);
     const zeroMatrix = clone(zeroArray.map(() => zeroArray));
-    const filledMatrix = fillMatrix(zeroMatrix, secondComparator);
+    const filledMatrix = fillMatrix(zeroMatrix, secondComparator.value);
     setSecondMatrix(filledMatrix);
   }, [secondComparator, array]);
 
@@ -108,7 +95,7 @@ function Task3() {
     const bR = [];
     const cartesianProduct = Array.from(product(array, array));
     for (let i = 0; i < cartesianProduct.length; i++) {
-      if (predicate(comparators[comparator](cartesianProduct[i][0], cartesianProduct[i][1]))) {
+      if (predicate(comparatorsObj[comparator].func(cartesianProduct[i][0], cartesianProduct[i][1]))) {
         if (isReverse) {
           bR.push(cartesianProduct[i].reverse());
         } else {
@@ -122,7 +109,7 @@ function Task3() {
   const fillMatrix = (zeroMatrix, comparator) => {
     for (let i = 0; i < zeroMatrix.length; i++) {
       for (let j = 0; j < zeroMatrix[i].length; j++) {
-        if (comparators[comparator](i, j)) {
+        if (comparatorsObj[comparator].func(i, j)) {
           zeroMatrix[i][j] = 1;
         }
       }
@@ -179,11 +166,11 @@ function Task3() {
         />
       </form>
       <RelationSelector
-        initial={comparator}
+        initial={comparator.value}
         comparatorChanged={handleChange}
       />
       <RelationSelector
-        initial={secondComparator}
+        initial={secondComparator.value}
         comparatorChanged={handleSecondChange}
       />
       <p className="m-3">1.2) Бінарне

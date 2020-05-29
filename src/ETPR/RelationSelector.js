@@ -8,6 +8,8 @@ import {makeStyles} from "@material-ui/core/styles";
 
 import TeX from "@matejmazur/react-katex";
 
+import {comparatorsObj} from "./comparators";
+
 const useStyles = makeStyles(theme => ({
   root: {
     '& > *': {
@@ -23,9 +25,14 @@ const useStyles = makeStyles(theme => ({
 }));
 
 
-function RelationSelector({ initial, comparatorChanged }) {
+function RelationSelector({initial, comparatorChanged}) {
   const classes = useStyles();
-  const handleChange = event => comparatorChanged(event.target.value);
+  const handleChange = event => comparatorChanged({
+    value: event.target.value,
+    math: comparatorsObj[event.target.value]
+  });
+
+  const keys = Object.keys(comparatorsObj);
 
   return (
     <FormControl className={classes.formControl}>
@@ -36,24 +43,11 @@ function RelationSelector({ initial, comparatorChanged }) {
         value={initial}
         onChange={handleChange}
       >
-        <MenuItem value={'eq'}>
-          <TeX className="mr-1" math="R_{x=y}"/>- дорівнює
-        </MenuItem>
-        <MenuItem value={'neq'}>
-          <TeX className="mr-1" math="R_{x \neq y}"/>- не дорівнює
-        </MenuItem>
-        <MenuItem value={'gt'}>
-          <TeX className="mr-1" math="R_{x > y}"/>- більше
-        </MenuItem>
-        <MenuItem value={'lt'}>
-          <TeX className="mr-1" math="R_{x < y}"/>- менше
-        </MenuItem>
-        <MenuItem value={'lte'}>
-          <TeX className="mr-1" math="R_{x \leq y}"/>- не більше
-        </MenuItem>
-        <MenuItem value={'gte'}>
-          <TeX className="mr-1" math="R_{x \geq y}"/>- не менше
-        </MenuItem>
+        {keys.map(c => (
+          <MenuItem value={comparatorsObj[c].value}>
+            <TeX className="mr-1" math={comparatorsObj[c].math}/>- {comparatorsObj[c].label}
+          </MenuItem>
+        ))}
       </Select>
     </FormControl>
   );
