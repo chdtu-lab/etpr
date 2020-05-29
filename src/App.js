@@ -1,4 +1,10 @@
 import React from 'react';
+import {
+  BrowserRouter,
+  Switch,
+  Route,
+  Link
+} from "react-router-dom";
 
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
@@ -18,26 +24,47 @@ function a11yProps(index) {
 }
 
 function App() {
-  const [value, setValue] = React.useState(0);
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
+  const allTabs = ['/etpr', '/dm'];
 
   return (
-    <>
-      <AppBar position="static">
-        <Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
-          <Tab label="ЕТПР" {...a11yProps(0)} />
-          <Tab label="Дискретна математика" {...a11yProps(1)} />
-        </Tabs>
-      </AppBar>
-      <TabPanel value={value} index={0}>
-        <ETPRApp/>
-      </TabPanel>
-      <TabPanel value={value} index={1}>
-        <DM/>
-      </TabPanel>
-    </>
+    <BrowserRouter>
+      <Route
+        path="/"
+        render={({location}) => (
+          <>
+            <AppBar position="static">
+              <Tabs value={location.pathname}>
+                <Tab
+                  label="Item One"
+                  value={allTabs[0]}
+                  component={Link}
+                  to={allTabs[0]}
+                  {...a11yProps(0)}
+                />
+                <Tab
+                  label="Item Two"
+                  value={allTabs[1]}
+                  component={Link}
+                  to={allTabs[1]}
+                />
+              </Tabs>
+            </AppBar>
+            <Switch>
+              <Route path={allTabs[0]} render={() =>
+                <TabPanel>
+                  <ETPRApp/>
+                </TabPanel>
+              }/>
+              <Route path={allTabs[1]} render={() =>
+                <TabPanel>
+                  <DM/>
+                </TabPanel>
+              }/>
+            </Switch>
+          </>
+        )}
+      />
+    </BrowserRouter>
   );
 }
 
