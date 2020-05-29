@@ -57,6 +57,7 @@ function Task3() {
   const [binaryRelation, setBinaryRelation] = useState([]);
   const [additionBinaryRelation, setAdditionBinaryRelation] = useState([]);
   const [reverseBinaryRelation, setReverseBinaryRelation] = useState([]);
+  const [dualBinaryRelation, setDualBinaryRelation] = useState([]);
   const [comparator, setComparator] = React.useState('eq');
   const [debouncedCallback1] = useDebouncedCallback(value => {
     setArray(value.split(',').map(Number));
@@ -69,6 +70,7 @@ function Task3() {
     setBinaryRelation(createBinaryRelation(array, is, comparator, false));
     setAdditionBinaryRelation(createBinaryRelation(array, not, comparator, false));
     setReverseBinaryRelation(createBinaryRelation(array, is, comparator, true));
+    setDualBinaryRelation(createBinaryRelation(array, not, comparator, true));
     const zeroArray = fill(Array(array.length + 1), 0);
     const zeroMatrix = clone(zeroArray.map(() => zeroArray));
     const filledMatrix = fillMatrix(zeroMatrix, comparator);
@@ -181,6 +183,7 @@ function Task3() {
       <p className="m-3">1.2) Бінарне відношення:  {binaryRelation.map(a => a.join(', ')).map(a => `(${a})`).join(', ')}</p>
       <p className="m-3">1.5) Доповнення до бінарного відношення:  {additionBinaryRelation.map(a => a.join(', ')).map(a => `(${a})`).join(', ')}</p>
       <p className="m-3">1.7) Обернене бінарне відношення:  {reverseBinaryRelation.map(a => a.join(', ')).map(a => `(${a})`).join(', ')}</p>
+      <p className="m-3">1.8) Двоїсте бінарне відношення:  {dualBinaryRelation.map(a => a.join(', ')).map(a => `(${a})`).join(', ')}</p>
       <p className="m-3">1.3) Бінарне відношення у матричному вигляді:</p>
       <div className="m-3">
         {matrix.map((row, i) => (
