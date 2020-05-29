@@ -54,6 +54,7 @@ function Task3() {
   const [graph, setGraph] = useState(initialGraph);
   const [matrix, setMatrix] = useState([]);
   const [secondMatrix, setSecondMatrix] = useState([]);
+  const [resultMatrix, setResultMatrix] = useState([]);
   const [binaryRelation, setBinaryRelation] = useState([]);
   const [additionBinaryRelation, setAdditionBinaryRelation] = useState([]);
   const [reverseBinaryRelation, setReverseBinaryRelation] = useState([]);
@@ -87,6 +88,20 @@ function Task3() {
     const filledMatrix = fillMatrix(zeroMatrix, secondComparator);
     setSecondMatrix(filledMatrix);
   }, [secondComparator, array]);
+
+  // https://stackoverflow.com/a/48694670/5774395
+  const matrixDot = (A, B) => {
+    let result = new Array(A.length).fill(0).map(() => new Array(B[0].length).fill(0));
+    return result.map((row, i) => {
+      return row.map((val, j) => {
+        return A[i].reduce((sum, elm, k) => sum + (elm * B[k][j]), 0)
+      })
+    })
+  }
+
+  useEffect(() => {
+    setResultMatrix(matrixDot(matrix, secondMatrix));
+  }, [matrix, secondMatrix]);
 
 
   const createBinaryRelation = (array, predicate, comparator, isReverse) => {
@@ -186,7 +201,12 @@ function Task3() {
         <div className="mr-4">
           <MatrixTable matrix={matrix}/>
         </div>
-        <MatrixTable matrix={secondMatrix}/>
+        <div className="mr-4">
+          <MatrixTable matrix={secondMatrix}/>
+        </div>
+        <div>
+          <MatrixTable matrix={resultMatrix}/>
+        </div>
       </div>
       <p className="m-3">Бінарне відношення у вигляді орієнтованого графа:</p>
       <div className="m-3">
