@@ -6,8 +6,8 @@ import AppBar from '@material-ui/core/AppBar';
 
 import TabPanel from "../UI/TabPanel";
 
-import Task1 from "./Task1";
-import Task3 from "./Task3";
+import Task1 from "./lab1/Task1";
+import Task3 from "./lab1/Task3";
 import Lab3 from "./Lab3";
 
 
