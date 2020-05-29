@@ -53,11 +53,13 @@ function Task3() {
   const [array, setArray] = useState([0, 1, 2, 3, 4]);
   const [graph, setGraph] = useState(initialGraph);
   const [matrix, setMatrix] = useState([]);
+  const [secondMatrix, setSecondMatrix] = useState([]);
   const [binaryRelation, setBinaryRelation] = useState([]);
   const [additionBinaryRelation, setAdditionBinaryRelation] = useState([]);
   const [reverseBinaryRelation, setReverseBinaryRelation] = useState([]);
   const [dualBinaryRelation, setDualBinaryRelation] = useState([]);
   const [comparator, setComparator] = React.useState('eq');
+  const [secondComparator, setSecondComparator] = React.useState('eq');
   const [debouncedCallback1] = useDebouncedCallback(value => {
     setArray(value.split(',').map(Number));
   }, 1000);
@@ -78,6 +80,13 @@ function Task3() {
     const graph = generateGraph(filledMatrix, array);
     setGraph(graph);
   }, [comparator, array]);
+
+  useEffect(() => {
+    const zeroArray = fill(Array(array.length), 0);
+    const zeroMatrix = clone(zeroArray.map(() => zeroArray));
+    const filledMatrix = fillMatrix(zeroMatrix, secondComparator);
+    setSecondMatrix(filledMatrix);
+  }, [secondComparator, array]);
 
 
   const createBinaryRelation = (array, predicate, comparator, isReverse) => {
@@ -140,6 +149,8 @@ function Task3() {
   }
 
   const handleChange = value => setComparator(value);
+  const handleSecondChange = value => setSecondComparator(value);
+  const binaryRelationToString = binaryRelation => binaryRelation.map(a => a.join(', ')).map(a => `(${a})`).join(', ');
 
   return (
     <>
@@ -156,16 +167,27 @@ function Task3() {
         initial={comparator}
         comparatorChanged={handleChange}
       />
+      <RelationSelector
+        initial={secondComparator}
+        comparatorChanged={handleSecondChange}
+      />
       <p className="m-3">1.2) Бінарне
-        відношення: {binaryRelation.map(a => a.join(', ')).map(a => `(${a})`).join(', ')}</p>
+        відношення: {binaryRelationToString(binaryRelation)}</p>
       <p className="m-3">1.5) Доповнення до бінарного
-        відношення: {additionBinaryRelation.map(a => a.join(', ')).map(a => `(${a})`).join(', ')}</p>
+        відношення: {binaryRelationToString(additionBinaryRelation)}</p>
       <p className="m-3">1.7) Обернене бінарне
-        відношення: {reverseBinaryRelation.map(a => a.join(', ')).map(a => `(${a})`).join(', ')}</p>
+        відношення: {binaryRelationToString(reverseBinaryRelation)}</p>
       <p className="m-3">1.8) Двоїсте бінарне
-        відношення: {dualBinaryRelation.map(a => a.join(', ')).map(a => `(${a})`).join(', ')}</p>
+        відношення: {binaryRelationToString(dualBinaryRelation)}</p>
       <p className="m-3">1.3) Бінарне відношення у матричному вигляді:</p>
       <MatrixTable matrix={matrix}/>
+      <p className="m-3">1.9) Композіція бінарних відношень:</p>
+      <div className="flex">
+        <div className="mr-4">
+          <MatrixTable matrix={matrix}/>
+        </div>
+        <MatrixTable matrix={secondMatrix}/>
+      </div>
       <p className="m-3">Бінарне відношення у вигляді орієнтованого графа:</p>
       <div className="m-3">
         <Graph
