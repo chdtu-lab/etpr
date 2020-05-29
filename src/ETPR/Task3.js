@@ -15,6 +15,7 @@ import Graph from "react-graph-vis";
 import {product} from "iter-tools/es2015";
 import 'katex/dist/katex.min.css';
 import RelationSelector from "./RelationSelector";
+import MatrixTable from "./MatrixTable";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -154,8 +155,7 @@ function Task3() {
       <RelationSelector
         initial={comparator}
         comparatorChanged={handleChange}
-      >
-      </RelationSelector>
+      />
       <p className="m-3">1.2) Бінарне
         відношення: {binaryRelation.map(a => a.join(', ')).map(a => `(${a})`).join(', ')}</p>
       <p className="m-3">1.5) Доповнення до бінарного
@@ -165,17 +165,7 @@ function Task3() {
       <p className="m-3">1.8) Двоїсте бінарне
         відношення: {dualBinaryRelation.map(a => a.join(', ')).map(a => `(${a})`).join(', ')}</p>
       <p className="m-3">1.3) Бінарне відношення у матричному вигляді:</p>
-      <table id='students'>
-        <tbody>
-        {matrix.map((row, i) => (
-          <tr key={i}>
-            {row.map((col, j) => (
-              <td key={j} className="border-solid border-2 border-gray-600">{col}</td>
-            ))}
-          </tr>
-        ))}
-        </tbody>
-      </table>
+      <MatrixTable matrix={matrix}/>
       <p className="m-3">Бінарне відношення у вигляді орієнтованого графа:</p>
       <div className="m-3">
         <Graph
