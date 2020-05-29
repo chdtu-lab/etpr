@@ -195,7 +195,7 @@ function Task3() {
           <MatrixTable matrix={resultMatrix}/>
         </div>
       </div>
-      <p className="m-3">Бінарне відношення у вигляді орієнтованого графа:</p>
+      <p className="m-3">1.3) Бінарне відношення у вигляді орієнтованого графа:</p>
       <div className="m-3">
         <Graph
           graph={graph}
