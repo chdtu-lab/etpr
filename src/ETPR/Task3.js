@@ -3,10 +3,6 @@ import {useDebouncedCallback} from "use-debounce";
 
 import TextField from "@material-ui/core/TextField";
 import {makeStyles} from "@material-ui/core/styles";
-import Select from '@material-ui/core/Select';
-import FormControl from '@material-ui/core/FormControl';
-import MenuItem from '@material-ui/core/MenuItem';
-import InputLabel from '@material-ui/core/InputLabel';
 
 import fill from 'lodash/fill';
 import lt from 'lodash/lt';
@@ -18,7 +14,7 @@ import eq from 'lodash/eq';
 import Graph from "react-graph-vis";
 import {product} from "iter-tools/es2015";
 import 'katex/dist/katex.min.css';
-import TeX from '@matejmazur/react-katex';
+import RelationSelector from "./RelationSelector";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -142,7 +138,7 @@ function Task3() {
     return graph;
   }
 
-  const handleChange = event => setComparator(event.target.value);
+  const handleChange = value => setComparator(value);
 
   return (
     <>
@@ -155,34 +151,11 @@ function Task3() {
           onChange={e => debouncedCallback1(e.target.value)}
         />
       </form>
-      <FormControl className={classes.formControl}>
-        <InputLabel id="demo-simple-select-label">Відношення</InputLabel>
-        <Select
-          labelId="demo-simple-select-label"
-          id="demo-simple-select"
-          value={comparator}
-          onChange={handleChange}
-        >
-          <MenuItem value={'eq'}>
-            <TeX className="mr-1" math="R_{x=y}"/>- дорівнює
-          </MenuItem>
-          <MenuItem value={'neq'}>
-            <TeX className="mr-1" math="R_{x \neq y}"/>- не дорівнює
-          </MenuItem>
-          <MenuItem value={'gt'}>
-            <TeX className="mr-1" math="R_{x > y}"/>- більше
-          </MenuItem>
-          <MenuItem value={'lt'}>
-            <TeX className="mr-1" math="R_{x < y}"/>- менше
-          </MenuItem>
-          <MenuItem value={'lte'}>
-            <TeX className="mr-1" math="R_{x \leq y}"/>- не більше
-          </MenuItem>
-          <MenuItem value={'gte'}>
-            <TeX className="mr-1" math="R_{x \geq y}"/>- не менше
-          </MenuItem>
-        </Select>
-      </FormControl>
+      <RelationSelector
+        initial={comparator}
+        comparatorChanged={handleChange}
+      >
+      </RelationSelector>
       <p className="m-3">1.2) Бінарне
         відношення: {binaryRelation.map(a => a.join(', ')).map(a => `(${a})`).join(', ')}</p>
       <p className="m-3">1.5) Доповнення до бінарного
