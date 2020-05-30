@@ -35,14 +35,14 @@ function App() {
             <AppBar position="static">
               <Tabs value={location.pathname}>
                 <Tab
-                  label="Item One"
+                  label="ЕТПР"
                   value={allTabs[0]}
                   component={Link}
                   to={allTabs[0]}
                   {...a11yProps(0)}
                 />
                 <Tab
-                  label="Item Two"
+                  label="Дискретна математика"
                   value={allTabs[1]}
                   component={Link}
                   to={allTabs[1]}

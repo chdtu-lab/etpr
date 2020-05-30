@@ -42,6 +42,7 @@ function Task3() {
   const [array, setArray] = useState([0, 1, 2, 3, 4]);
   const [graph, setGraph] = useState(initialGraph);
   const [matrix, setMatrix] = useState([]);
+  const [isReflectMatrix, setIsReflectMatrix] = useState(false);
   const [secondMatrix, setSecondMatrix] = useState([]);
   const [resultMatrix, setResultMatrix] = useState([]);
   const [binaryRelation, setBinaryRelation] = useState([]);
@@ -100,6 +101,24 @@ function Task3() {
     }
     return BR;
   }
+
+  const checkReflectiveMatrix = (matrix) => {
+    const indexes = [...new Array(matrix.length)].map((n, index) => [index, index]);
+    let count = 0;
+    for (const indexe of indexes) {
+      if (matrix[indexe[0]][indexe[1]] === 1) {
+        count+=1;
+      }
+    }
+    return matrix.length === count;
+  }
+
+  useEffect(() => {
+    if (matrix.length) {
+      setIsReflectMatrix(checkReflectiveMatrix(matrix));
+    }
+  }, [matrix, secondMatrix]);
+
 
   useEffect(() => {
     if (matrix.length) {
@@ -212,6 +231,8 @@ function Task3() {
         відношення: {binaryRelationToString(dualBinaryRelation)}</p>
       <p className="m-3">1.3) Бінарне відношення у матричному вигляді:</p>
       <MatrixTable matrix={matrix}/>
+      <p>{`Оскільки у матриці на головній діагоналі стоять ${isReflectMatrix? 'одиниці': 'нулі'}, то воно ${isReflectMatrix? 'рефлексивне': 'не є рефлексивним'}`}</p>
+      <p>{`Оскільки відношення ${isReflectMatrix? 'рефлексивне': 'не рефлексивне'}, то воно ${isReflectMatrix? 'не антирефлексивне': 'антирефлексивне'}`}</p>
       <p className="m-3">1.9) Композіція бінарних відношень:</p>
       <div className="flex">
         <div className="flex mr-2 items-center">
