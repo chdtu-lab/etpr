@@ -29,7 +29,7 @@ function RelationSelector({initial, comparatorChanged}) {
   const classes = useStyles();
   const handleChange = event => comparatorChanged({
     value: event.target.value,
-    math: comparatorsObj[event.target.value]
+    math: comparatorsObj[event.target.value].math
   });
 
   const keys = Object.keys(comparatorsObj);

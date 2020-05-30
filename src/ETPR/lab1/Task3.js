@@ -8,9 +8,11 @@ import fill from 'lodash/fill';
 import Graph from "react-graph-vis";
 import {product} from "iter-tools/es2015";
 import 'katex/dist/katex.min.css';
+
 import RelationSelector from "./RelationSelector";
 import MatrixTable from "./MatrixTable";
 import {comparatorsObj} from "./comparators";
+import TeX from "@matejmazur/react-katex";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -77,6 +79,7 @@ function Task3() {
   }, [secondComparator, array]);
 
   // https://stackoverflow.com/a/48694670/5774395
+  // math.multiply(math.matrix(matrix), math.matrix(secondMatrix));
   const matrixDot = (A, B) => {
     let result = new Array(A.length).fill(0).map(() => new Array(B[0].length).fill(0));
     return result.map((row, i) => {
@@ -86,8 +89,33 @@ function Task3() {
     })
   }
 
+  const matrixToBinaryRelation = (matrix) => {
+    const BR = [];
+    for (let i = 0; i < matrix.length; i++) {
+      for (let j = 0; j < matrix[i].length; j++) {
+        if (matrix[i][j] === 1) {
+          BR.push([i, j]);
+        }
+      }
+    }
+    return BR;
+  }
+
   useEffect(() => {
-    setResultMatrix(matrixDot(matrix, secondMatrix));
+    if (matrix.length) {
+      const BR1 = matrixToBinaryRelation(matrix);
+      const BR2 = matrixToBinaryRelation(secondMatrix);
+      const zeroArray = fill(Array(array.length), 0);
+      const zeroMatrix = clone(zeroArray.map(() => zeroArray));
+      for (const br1 of BR1) {
+        for (const br2 of BR2) {
+           if (br1[1] === br2[0]) {
+             zeroMatrix[br1[0]][br2[1]] = 1;
+           }
+        }
+      }
+      setResultMatrix(zeroMatrix);
+    }
   }, [matrix, secondMatrix]);
 
 
@@ -153,6 +181,7 @@ function Task3() {
   const handleChange = value => setComparator(value);
   const handleSecondChange = value => setSecondComparator(value);
   const binaryRelationToString = binaryRelation => binaryRelation.map(a => a.join(', ')).map(a => `(${a})`).join(', ');
+  const matrixToLatex  = (mathExp) => String.raw`\begin{pmatrix}${mathExp.map(i => i.join(' & ')).join("\\\\\n")}\end{pmatrix}`;
 
   return (
     <>
@@ -185,14 +214,20 @@ function Task3() {
       <MatrixTable matrix={matrix}/>
       <p className="m-3">1.9) Композіція бінарних відношень:</p>
       <div className="flex">
-        <div className="mr-4">
-          <MatrixTable matrix={matrix}/>
+        <div className="flex mr-2 items-center">
+          <TeX className="mr-1" math={comparator.math}/>
+          <TeX className="mr-1" math='\circ'/>
+          <TeX className="mr-1" math={secondComparator.math}/>
+          <TeX className="mr-1" math='='/>
+          <TeX math={matrixToLatex(matrix)}/>
         </div>
-        <div className="mr-4">
-          <MatrixTable matrix={secondMatrix}/>
+        <div className="flex mr-2 items-center">
+          <TeX className="mr-1" math='\circ'/>
+          <TeX math={matrixToLatex(secondMatrix)}/>
         </div>
-        <div>
-          <MatrixTable matrix={resultMatrix}/>
+        <div className="flex items-center">
+          <TeX className="mr-1" math='='/>
+          <TeX className="mr-1" math={matrixToLatex(resultMatrix)}/>
         </div>
       </div>
       <p className="m-3">1.3) Бінарне відношення у вигляді орієнтованого графа:</p>
