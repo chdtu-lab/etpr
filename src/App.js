@@ -24,7 +24,7 @@ function a11yProps(index) {
 }
 
 function App() {
-  const allTabs = ['/etpr', '/dm'];
+  const allTabs = ['/etpr', '/dm', '/about'];
 
   return (
     <BrowserRouter>
@@ -47,6 +47,12 @@ function App() {
                   component={Link}
                   to={allTabs[1]}
                 />
+                <Tab
+                  label="About"
+                  value={allTabs[2]}
+                  component={Link}
+                  to={allTabs[2]}
+                />
               </Tabs>
             </AppBar>
             <Switch>
@@ -58,6 +64,16 @@ function App() {
               <Route path={allTabs[1]} render={() =>
                 <TabPanel>
                   <DM/>
+                </TabPanel>
+              }/>
+              <Route path={allTabs[2]} render={() =>
+                <TabPanel>
+                  <div className="mb-2">
+                    Author: Андрій Орєхов
+                  </div>
+                  <div>
+                    Source code: <a className="text-purple-900" href="https://github.com/chdtu-lab/etpr">etpr</a> PRs are welcome!
+                  </div>
                 </TabPanel>
               }/>
             </Switch>
