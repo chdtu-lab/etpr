@@ -288,7 +288,7 @@ function Task3() {
     for (let i = 0; i < matrix.length; i++) {
       for (let j = 0; j < matrix[i].length; j++) {
         if (matrix[i][j] === 1) {
-          graph['edges'].push({from: i, to: j})
+          graph['edges'].push({from: namedArray[i], to: namedArray[j]})
         }
       }
     }
