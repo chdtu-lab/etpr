@@ -45,6 +45,7 @@ function Task3() {
   const [isReflectMatrix, setIsReflectMatrix] = useState(false);
   const [isSymmetricMatrix, setSymmetricMatrix] = useState(false);
   const [isASymmetricMatrix, setASymmetricMatrix] = useState(false);
+  const [isAntiSymmetricMatrix, setAntiSymmetricMatrix] = useState(false);
   const [secondMatrix, setSecondMatrix] = useState([]);
   const [resultMatrix, setResultMatrix] = useState([]);
   const [binaryRelation, setBinaryRelation] = useState([]);
@@ -104,6 +105,17 @@ function Task3() {
     return BR;
   }
 
+  const checkAntiSymmetricMatrix = (matrix) => {
+    for (let i = 0; i < matrix.length; i++) {
+      for (let j = 0; j < matrix[i].length; j++) {
+        if (Boolean(matrix[i][j]) && Boolean(matrix[j][i]) && !(i === j)) {
+          return false
+        }
+      }
+    }
+    return true
+  }
+
   const checkASymmetricMatrix = (matrix) => {
     for (let i = 0; i < matrix.length; i++) {
       for (let j = 0; j < matrix[i].length; j++) {
@@ -142,6 +154,7 @@ function Task3() {
       setIsReflectMatrix(checkReflectiveMatrix(matrix));
       setSymmetricMatrix(checkSymmetricMatrix(matrix));
       setASymmetricMatrix(checkASymmetricMatrix(matrix));
+      setAntiSymmetricMatrix(checkAntiSymmetricMatrix(matrix));
     }
   }, [matrix, secondMatrix]);
 
@@ -261,6 +274,7 @@ function Task3() {
       <p>{`Оскільки відношення ${isReflectMatrix ? 'рефлексивне': 'не рефлексивне'}, то воно ${isReflectMatrix ? 'не антирефлексивне': 'антирефлексивне'}`}</p>
       <p>{`Дане відношення  ${isSymmetricMatrix ? 'симетричне': 'не симетричне'}`}</p>
       <p>{`Дане відношення  ${isASymmetricMatrix ? 'aсиметричне': 'не aсиметричне'}`}</p>
+      <p>{`Дане відношення  ${isAntiSymmetricMatrix ? 'антисиметричне': 'не антисиметричне'}`}</p>
       <p className="m-3">1.9) Композіція бінарних відношень:</p>
       <div className="flex">
         <div className="flex mr-2 items-center">
