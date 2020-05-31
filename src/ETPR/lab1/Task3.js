@@ -47,6 +47,7 @@ function Task3() {
   const [isASymmetricMatrix, setIsASymmetricMatrix] = useState(false);
   const [isAntiSymmetricMatrix, setIsAntiSymmetricMatrix] = useState(false);
   const [isTransitiveMatrix, setIsTransitiveMatrix] = useState(false);
+  const [isCompleteMatrix, setIsCompleteMatrix] = useState(false);
   const [secondMatrix, setSecondMatrix] = useState([]);
   const [resultMatrix, setResultMatrix] = useState([]);
   const [symmetricMatrix, setSymmetricMatrix] = useState([]);
@@ -216,6 +217,17 @@ function Task3() {
     return matrix.length === count;
   }
 
+  const checkCompleteMatrix = (matrix) => {
+    for (let i = 0; i < matrix.length; i++) {
+      for (let j = 0; j < matrix[i].length; j++) {
+        if (!matrix[i][j]) {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+
   useEffect(() => {
     if (matrix.length) {
       setIsReflectMatrix(checkReflectiveMatrix(matrix));
@@ -224,6 +236,7 @@ function Task3() {
       setIsASymmetricMatrix(checkASymmetricMatrix(matrix));
       setIsAntiSymmetricMatrix(checkAntiSymmetricMatrix(matrix));
       setIsTransitiveMatrix(checkTransitiveMatrix(matrix));
+      setIsCompleteMatrix(checkCompleteMatrix(matrix));
     }
   }, [matrix]);
 
@@ -386,6 +399,7 @@ function Task3() {
 
       <p className="mb-5">{`Дане відношення  ${!isASymmetricMatrix ? 'циклічне' : 'не циклічне'}`}</p>
       <p className="mb-5">{`Дане відношення  ${isASymmetricMatrix ? 'ациклічне' : 'не ациклічне'}`}</p>
+      <p className="mb-5">{`Дане відношення  ${isCompleteMatrix ? 'зв’язне' : 'не зв’язне'}`}</p>
 
       <p className="m-3">1.9) Композіція бінарних відношень:</p>
       <div className="flex items-center">
