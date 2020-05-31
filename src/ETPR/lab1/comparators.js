@@ -3,6 +3,7 @@ import lte from 'lodash/lte';
 import gte from 'lodash/gte';
 import gt from 'lodash/gt';
 import eq from 'lodash/eq';
+import {gcd} from 'mathjs';
 
 export const comparatorsObj = {
   eq: {
@@ -46,5 +47,11 @@ export const comparatorsObj = {
     math: '(a + b) \\% 2 = 0',
     label: "сума двох чисел ділитися на 2",
     func: (a, b) => (a + b) % 2 === 0
+  },
+  gcdr: {
+    value: 'gcdr',
+    math: String.raw`gcd(a, b) = 1`,
+    label: "є взаємно простими",
+    func: (a, b) => gcd(a, b) === 1
   },
 }

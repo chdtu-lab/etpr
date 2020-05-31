@@ -75,14 +75,15 @@ function Task3() {
     setAdditionBinaryRelation(createBinaryRelation(array, not, comparator.value, false));
     setReverseBinaryRelation(createBinaryRelation(array, is, comparator.value, true));
     setDualBinaryRelation(createBinaryRelation(array, not, comparator.value, true));
+
     const zeroArray = fill(Array(array.length), 0);
     const zeroMatrix = clone(zeroArray.map(() => zeroArray));
-    const filledMatrix = fillMatrix(zeroMatrix, comparator.value);
-    setMatrix(filledMatrix);
     setDiagonalMatrix(fillMatrix(zeroMatrix, comparatorsObj.eq.value));
-    const graph = generateGraph(filledMatrix, array);
-    setGraph(graph);
   }, [comparator, array]);
+
+  useEffect(() => {
+    setMatrix(binaryRelationToMatrix(binaryRelation))
+  }, [binaryRelation]);
 
   useEffect(() => {
     const zeroArray = fill(Array(array.length), 0);
@@ -107,7 +108,7 @@ function Task3() {
     for (let i = 0; i < matrix.length; i++) {
       for (let j = 0; j < matrix[i].length; j++) {
         if (matrix[i][j] === 1) {
-          BR.push([i, j]);
+          BR.push([array[i], array[j]]);
         }
       }
     }
@@ -118,7 +119,7 @@ function Task3() {
     const zeroArray = fill(Array(array.length), 0);
     const zeroMatrix = clone(zeroArray.map(() => zeroArray));
     for (const b of br) {
-      zeroMatrix[b[0]][b[1]] = 1;
+      zeroMatrix[array.indexOf(b[0])][array.indexOf(b[1])] = 1;
     }
     return zeroMatrix;
   }
@@ -131,7 +132,7 @@ function Task3() {
     for (const br1 of BR1) {
       for (const br2 of BR2) {
         if (br1[1] === br2[0]) {
-          zeroMatrix[br1[0]][br2[1]] = 1;
+          zeroMatrix[array.indexOf(br1[0])][array.indexOf(br2[1])] = 1;
         }
       }
     }
@@ -230,6 +231,8 @@ function Task3() {
 
   useEffect(() => {
     if (matrix.length) {
+      setGraph(generateGraph(matrix, array));
+
       setIsReflectMatrix(checkReflectiveMatrix(matrix));
       setIsSymmetricMatrix(checkSymmetricMatrix(matrix));
       setSymmetricMatrix(getSymmetricMatrix(matrix));
