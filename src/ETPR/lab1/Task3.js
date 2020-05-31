@@ -43,12 +43,13 @@ function Task3() {
   const [graph, setGraph] = useState(initialGraph);
   const [matrix, setMatrix] = useState([]);
   const [isReflectMatrix, setIsReflectMatrix] = useState(false);
-  const [isSymmetricMatrix, setSymmetricMatrix] = useState(false);
+  const [isSymmetricMatrix, setIsSymmetricMatrix] = useState(false);
   const [isASymmetricMatrix, setASymmetricMatrix] = useState(false);
   const [isAntiSymmetricMatrix, setAntiSymmetricMatrix] = useState(false);
   const [isTransitiveMatrix, setIsTransitiveMatrix] = useState(false);
   const [secondMatrix, setSecondMatrix] = useState([]);
   const [resultMatrix, setResultMatrix] = useState([]);
+  const [symmetricMatrix, setSymmetricMatrix] = useState([]);
   const [diagonalMatrix, setDiagonalMatrix] = useState([]);
   const [compositionMatrixForTransitive, setCompositionMatrixForTransitive] = useState([]);
   const [binaryRelation, setBinaryRelation] = useState([]);
@@ -193,6 +194,19 @@ function Task3() {
     return true
   }
 
+  const getSymmetricMatrix = (matrix) => {
+    const zeroArray = fill(Array(array.length), 0);
+    const zeroMatrix = clone(zeroArray.map(() => zeroArray));
+    for (let i = 0; i < matrix.length; i++) {
+      for (let j = 0; j < matrix[i].length; j++) {
+        if (matrix[i][j]) {
+          zeroMatrix[j][i] = 1;
+        }
+      }
+    }
+    return zeroMatrix
+  }
+
   const checkReflectiveMatrix = (matrix) => {
     const indexes = [...new Array(matrix.length)].map((n, index) => [index, index]);
     let count = 0;
@@ -207,7 +221,8 @@ function Task3() {
   useEffect(() => {
     if (matrix.length) {
       setIsReflectMatrix(checkReflectiveMatrix(matrix));
-      setSymmetricMatrix(checkSymmetricMatrix(matrix));
+      setIsSymmetricMatrix(checkSymmetricMatrix(matrix));
+      setSymmetricMatrix(getSymmetricMatrix(matrix));
       setASymmetricMatrix(checkASymmetricMatrix(matrix));
       setAntiSymmetricMatrix(checkAntiSymmetricMatrix(matrix));
       checkTransitiveMatrix(matrix);
@@ -335,8 +350,22 @@ function Task3() {
         <p>{`Оскільки у матриці на головній діагоналі стоять ${isReflectMatrix ? 'одиниці' : 'нулі'}, то воно ${isReflectMatrix ? 'рефлексивне' : 'не є рефлексивним'}`}</p>
       </div>
 
-      <p>{`Оскільки відношення ${isReflectMatrix ? 'рефлексивне' : 'не рефлексивне'}, то воно ${isReflectMatrix ? 'не антирефлексивне' : 'антирефлексивне'}`}</p>
-      <p>{`Дане відношення  ${isSymmetricMatrix ? 'симетричне' : 'не симетричне'}`}</p>
+      <p className="mb-5">{`Оскільки відношення ${isReflectMatrix ? 'рефлексивне' : 'не рефлексивне'}, то воно ${isReflectMatrix ? 'не антирефлексивне' : 'антирефлексивне'}`}</p>
+
+      <div className="mb-5">
+        <div className="mb-3">
+          <i>Cиметричність:</i>
+        </div>
+        <div className="flex items-center">
+          <TeX className="mr-1" math={comparator.math.replace('R', 'R^{-1}')}/>
+          <TeX className="mr-1" math='='/>
+          <TeX math={matrixToLatex(symmetricMatrix)}/>
+          {isSymmetricMatrix ?  <TeX math='='/> :  <TeX math='\neq'/>}
+          <TeX className="mr-1" math={comparator.math}/>
+        </div>
+        <p>{`Отже, дане відношення  ${isSymmetricMatrix ? 'симетричне' : 'не симетричне'}`}</p>
+      </div>
+
       <p>{`Дане відношення  ${isASymmetricMatrix ? 'aсиметричне' : 'не aсиметричне'}`}</p>
       <p className="mb-5">{`Дане відношення  ${isAntiSymmetricMatrix ? 'антисиметричне' : 'не антисиметричне'}`}</p>
 
