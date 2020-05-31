@@ -41,4 +41,10 @@ export const comparatorsObj = {
     label: "не більше",
     func: lte
   },
+  dev2: {
+    value: 'dev2',
+    math: '(a + b) \\% 2 = 0',
+    label: "сума двох чисел ділитися на 2",
+    func: (a, b) => (a + b) % 2 === 0
+  },
 }
