@@ -46,6 +46,7 @@ function Task3() {
   const [isSymmetricMatrix, setSymmetricMatrix] = useState(false);
   const [isASymmetricMatrix, setASymmetricMatrix] = useState(false);
   const [isAntiSymmetricMatrix, setAntiSymmetricMatrix] = useState(false);
+  const [isTransitiveMatrix, setIsTransitiveMatrix] = useState(false);
   const [secondMatrix, setSecondMatrix] = useState([]);
   const [resultMatrix, setResultMatrix] = useState([]);
   const [binaryRelation, setBinaryRelation] = useState([]);
@@ -105,6 +106,41 @@ function Task3() {
     return BR;
   }
 
+  const compositionOfMatrix = (matrix, secondMatrix) => {
+     const BR1 = matrixToBinaryRelation(matrix);
+     const BR2 = matrixToBinaryRelation(secondMatrix);
+     const zeroArray = fill(Array(array.length), 0);
+     const zeroMatrix = clone(zeroArray.map(() => zeroArray));
+     for (const br1 of BR1) {
+       for (const br2 of BR2) {
+         if (br1[1] === br2[0]) {
+           zeroMatrix[br1[0]][br2[1]] = 1;
+         }
+       }
+     }
+     return zeroMatrix;
+  }
+
+  const binaryRelationsIncludes = (br1, br2) => {
+    let matchCount = 0;
+    for (const b1 of br1) {
+      for (const b2 of br2) {
+        if (b1[0] === b2[0] && b1[1] === b2[1]) {
+          matchCount+=1;
+        }
+      }
+    }
+    return br2.length === matchCount;
+  }
+
+  const checkTransitiveMatrix = (matrix) => {
+    if (matrix.length) {
+      const compositionOfBR = matrixToBinaryRelation(compositionOfMatrix(matrix, matrix));
+      const br = matrixToBinaryRelation(matrix);
+      setIsTransitiveMatrix(binaryRelationsIncludes(br, compositionOfBR));
+    }
+  }
+
   const checkAntiSymmetricMatrix = (matrix) => {
     for (let i = 0; i < matrix.length; i++) {
       for (let j = 0; j < matrix[i].length; j++) {
@@ -155,24 +191,14 @@ function Task3() {
       setSymmetricMatrix(checkSymmetricMatrix(matrix));
       setASymmetricMatrix(checkASymmetricMatrix(matrix));
       setAntiSymmetricMatrix(checkAntiSymmetricMatrix(matrix));
+      checkTransitiveMatrix(matrix);
     }
   }, [matrix, secondMatrix]);
 
 
   useEffect(() => {
     if (matrix.length) {
-      const BR1 = matrixToBinaryRelation(matrix);
-      const BR2 = matrixToBinaryRelation(secondMatrix);
-      const zeroArray = fill(Array(array.length), 0);
-      const zeroMatrix = clone(zeroArray.map(() => zeroArray));
-      for (const br1 of BR1) {
-        for (const br2 of BR2) {
-           if (br1[1] === br2[0]) {
-             zeroMatrix[br1[0]][br2[1]] = 1;
-           }
-        }
-      }
-      setResultMatrix(zeroMatrix);
+      setResultMatrix(compositionOfMatrix(matrix, secondMatrix));
     }
   }, [matrix, secondMatrix]);
 
@@ -275,6 +301,7 @@ function Task3() {
       <p>{`Дане відношення  ${isSymmetricMatrix ? 'симетричне': 'не симетричне'}`}</p>
       <p>{`Дане відношення  ${isASymmetricMatrix ? 'aсиметричне': 'не aсиметричне'}`}</p>
       <p>{`Дане відношення  ${isAntiSymmetricMatrix ? 'антисиметричне': 'не антисиметричне'}`}</p>
+      <p>{`Дане відношення  ${isTransitiveMatrix ? 'транзитивне': 'не транзитивне'}`}</p>
       <p className="m-3">1.9) Композіція бінарних відношень:</p>
       <div className="flex">
         <div className="flex mr-2 items-center">
