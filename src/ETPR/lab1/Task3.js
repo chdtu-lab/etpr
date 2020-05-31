@@ -49,6 +49,7 @@ function Task3() {
   const [isTransitiveMatrix, setIsTransitiveMatrix] = useState(false);
   const [secondMatrix, setSecondMatrix] = useState([]);
   const [resultMatrix, setResultMatrix] = useState([]);
+  const [compositionMatrixForTransitive, setCompositionMatrixForTransitive] = useState([]);
   const [binaryRelation, setBinaryRelation] = useState([]);
   const [additionBinaryRelation, setAdditionBinaryRelation] = useState([]);
   const [reverseBinaryRelation, setReverseBinaryRelation] = useState([]);
@@ -106,6 +107,15 @@ function Task3() {
     return BR;
   }
 
+  const binaryRelationToMatrix = (br) => {
+     const zeroArray = fill(Array(array.length), 0);
+     const zeroMatrix = clone(zeroArray.map(() => zeroArray));
+     for (const b of br) {
+       zeroMatrix[b[0]][b[1]] = 1;
+     }
+    return zeroMatrix;
+  }
+
   const compositionOfMatrix = (matrix, secondMatrix) => {
      const BR1 = matrixToBinaryRelation(matrix);
      const BR2 = matrixToBinaryRelation(secondMatrix);
@@ -137,6 +147,8 @@ function Task3() {
     if (matrix.length) {
       const compositionOfBR = matrixToBinaryRelation(compositionOfMatrix(matrix, matrix));
       const br = matrixToBinaryRelation(matrix);
+      const compositionMatrix = binaryRelationToMatrix(compositionOfBR);
+      setCompositionMatrixForTransitive(compositionMatrix);
       setIsTransitiveMatrix(binaryRelationsIncludes(br, compositionOfBR));
     }
   }
@@ -300,8 +312,31 @@ function Task3() {
       <p>{`Оскільки відношення ${isReflectMatrix ? 'рефлексивне': 'не рефлексивне'}, то воно ${isReflectMatrix ? 'не антирефлексивне': 'антирефлексивне'}`}</p>
       <p>{`Дане відношення  ${isSymmetricMatrix ? 'симетричне': 'не симетричне'}`}</p>
       <p>{`Дане відношення  ${isASymmetricMatrix ? 'aсиметричне': 'не aсиметричне'}`}</p>
-      <p>{`Дане відношення  ${isAntiSymmetricMatrix ? 'антисиметричне': 'не антисиметричне'}`}</p>
-      <p>{`Дане відношення  ${isTransitiveMatrix ? 'транзитивне': 'не транзитивне'}`}</p>
+      <p className="mb-5">{`Дане відношення  ${isAntiSymmetricMatrix ? 'антисиметричне': 'не антисиметричне'}`}</p>
+
+      <div className="flex mb-3">
+        <div className="flex mr-2 items-center">
+          <TeX className="mr-1" math={comparator.math}/>
+          <TeX className="mr-1" math='\circ'/>
+          <TeX className="mr-1" math={comparator.math}/>
+          <TeX className="mr-1" math='='/>
+          <TeX math={matrixToLatex(matrix)}/>
+        </div>
+        <div className="flex mr-2 items-center">
+          <TeX className="mr-1" math='\circ'/>
+          <TeX math={matrixToLatex(matrix)}/>
+        </div>
+        <div className="flex items-center">
+          <TeX className="mr-1" math='='/>
+          <TeX className="mr-1" math={matrixToLatex(compositionMatrixForTransitive)}/>
+        </div>
+        <div className="flex items-center">
+          {isTransitiveMatrix ?  <TeX className="mr-1" math='\subset'/> : <TeX className="mr-1" math='\not\subset'/> }
+          <TeX math={comparator.math}/>
+        </div>
+      </div>
+      <p>{`Отже, данне відношення  ${isTransitiveMatrix ? 'транзитивне': 'не транзитивне'}`}</p>
+
       <p className="m-3">1.9) Композіція бінарних відношень:</p>
       <div className="flex">
         <div className="flex mr-2 items-center">
@@ -320,6 +355,7 @@ function Task3() {
           <TeX className="mr-1" math={matrixToLatex(resultMatrix)}/>
         </div>
       </div>
+
       <p className="m-3">1.3) Бінарне відношення у вигляді орієнтованого графа:</p>
       <div className="m-3">
         <Graph
