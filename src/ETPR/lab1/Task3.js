@@ -44,6 +44,7 @@ function Task3() {
   const [matrix, setMatrix] = useState([]);
   const [isReflectMatrix, setIsReflectMatrix] = useState(false);
   const [isSymmetricMatrix, setSymmetricMatrix] = useState(false);
+  const [isASymmetricMatrix, setASymmetricMatrix] = useState(false);
   const [secondMatrix, setSecondMatrix] = useState([]);
   const [resultMatrix, setResultMatrix] = useState([]);
   const [binaryRelation, setBinaryRelation] = useState([]);
@@ -103,14 +104,21 @@ function Task3() {
     return BR;
   }
 
-
-  const checkSymmetricMatrix = (matrix) => {
-    let count = 0;
+  const checkASymmetricMatrix = (matrix) => {
     for (let i = 0; i < matrix.length; i++) {
       for (let j = 0; j < matrix[i].length; j++) {
-        if (matrix[i][j] === matrix[j][i]) {
-          count+=1;
-        } else {
+        if (Boolean(matrix[i][j]) && Boolean(matrix[j][i])) {
+          return false
+        }
+      }
+    }
+    return true
+  }
+
+  const checkSymmetricMatrix = (matrix) => {
+    for (let i = 0; i < matrix.length; i++) {
+      for (let j = 0; j < matrix[i].length; j++) {
+        if (!(matrix[i][j] === matrix[j][i])) {
           return false
         }
       }
@@ -133,6 +141,7 @@ function Task3() {
     if (matrix.length) {
       setIsReflectMatrix(checkReflectiveMatrix(matrix));
       setSymmetricMatrix(checkSymmetricMatrix(matrix));
+      setASymmetricMatrix(checkASymmetricMatrix(matrix));
     }
   }, [matrix, secondMatrix]);
 
@@ -251,6 +260,7 @@ function Task3() {
       <p>{`Оскільки у матриці на головній діагоналі стоять ${isReflectMatrix ? 'одиниці': 'нулі'}, то воно ${isReflectMatrix ? 'рефлексивне': 'не є рефлексивним'}`}</p>
       <p>{`Оскільки відношення ${isReflectMatrix ? 'рефлексивне': 'не рефлексивне'}, то воно ${isReflectMatrix ? 'не антирефлексивне': 'антирефлексивне'}`}</p>
       <p>{`Дане відношення  ${isSymmetricMatrix ? 'симетричне': 'не симетричне'}`}</p>
+      <p>{`Дане відношення  ${isASymmetricMatrix ? 'aсиметричне': 'не aсиметричне'}`}</p>
       <p className="m-3">1.9) Композіція бінарних відношень:</p>
       <div className="flex">
         <div className="flex mr-2 items-center">
