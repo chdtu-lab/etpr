@@ -44,8 +44,8 @@ function Task3() {
   const [matrix, setMatrix] = useState([]);
   const [isReflectMatrix, setIsReflectMatrix] = useState(false);
   const [isSymmetricMatrix, setIsSymmetricMatrix] = useState(false);
-  const [isASymmetricMatrix, setASymmetricMatrix] = useState(false);
-  const [isAntiSymmetricMatrix, setAntiSymmetricMatrix] = useState(false);
+  const [isASymmetricMatrix, setIsASymmetricMatrix] = useState(false);
+  const [isAntiSymmetricMatrix, setIsAntiSymmetricMatrix] = useState(false);
   const [isTransitiveMatrix, setIsTransitiveMatrix] = useState(false);
   const [secondMatrix, setSecondMatrix] = useState([]);
   const [resultMatrix, setResultMatrix] = useState([]);
@@ -78,8 +78,6 @@ function Task3() {
     const zeroMatrix = clone(zeroArray.map(() => zeroArray));
     const filledMatrix = fillMatrix(zeroMatrix, comparator.value);
     setMatrix(filledMatrix);
-    console.log('setDiagonalMatrix');
-    console.log(zeroMatrix);
     setDiagonalMatrix(fillMatrix(zeroMatrix, comparatorsObj.eq.value));
     const graph = generateGraph(filledMatrix, array);
     setGraph(graph);
@@ -157,7 +155,7 @@ function Task3() {
       const br = matrixToBinaryRelation(matrix);
       const compositionMatrix = binaryRelationToMatrix(compositionOfBR);
       setCompositionMatrixForTransitive(compositionMatrix);
-      setIsTransitiveMatrix(binaryRelationsIncludes(br, compositionOfBR));
+      return binaryRelationsIncludes(br, compositionOfBR);
     }
   }
 
@@ -223,10 +221,9 @@ function Task3() {
       setIsReflectMatrix(checkReflectiveMatrix(matrix));
       setIsSymmetricMatrix(checkSymmetricMatrix(matrix));
       setSymmetricMatrix(getSymmetricMatrix(matrix));
-      setASymmetricMatrix(checkASymmetricMatrix(matrix));
-      setAntiSymmetricMatrix(checkAntiSymmetricMatrix(matrix));
-      checkTransitiveMatrix(matrix);
-
+      setIsASymmetricMatrix(checkASymmetricMatrix(matrix));
+      setIsAntiSymmetricMatrix(checkAntiSymmetricMatrix(matrix));
+      setIsTransitiveMatrix(checkTransitiveMatrix(matrix));
     }
   }, [matrix]);
 
@@ -350,7 +347,8 @@ function Task3() {
         <p>{`Оскільки у матриці на головній діагоналі стоять ${isReflectMatrix ? 'одиниці' : 'нулі'}, то воно ${isReflectMatrix ? 'рефлексивне' : 'не є рефлексивним'}`}</p>
       </div>
 
-      <p className="mb-5">{`Оскільки відношення ${isReflectMatrix ? 'рефлексивне' : 'не рефлексивне'}, то воно ${isReflectMatrix ? 'не антирефлексивне' : 'антирефлексивне'}`}</p>
+      <p
+        className="mb-5">{`Оскільки відношення ${isReflectMatrix ? 'рефлексивне' : 'не рефлексивне'}, то воно ${isReflectMatrix ? 'не антирефлексивне' : 'антирефлексивне'}`}</p>
 
       <div className="mb-5">
         <div className="mb-3">
@@ -360,29 +358,34 @@ function Task3() {
           <TeX className="mr-1" math={comparator.math.replace('R', 'R^{-1}')}/>
           <TeX className="mr-1" math='='/>
           <TeX math={matrixToLatex(symmetricMatrix)}/>
-          {isSymmetricMatrix ?  <TeX math='='/> :  <TeX math='\neq'/>}
+          {isSymmetricMatrix ? <TeX math='='/> : <TeX math='\neq'/>}
           <TeX className="mr-1" math={comparator.math}/>
         </div>
-        <p>{`Отже, дане відношення  ${isSymmetricMatrix ? 'симетричне' : 'не симетричне'}`}</p>
+        <p>{`Отже, дане відношення  ${isSymmetricMatrix && !isAntiSymmetricMatrix ? 'симетричне' : 'не симетричне'}`}</p>
       </div>
 
       <p>{`Дане відношення  ${isASymmetricMatrix ? 'aсиметричне' : 'не aсиметричне'}`}</p>
       <p className="mb-5">{`Дане відношення  ${isAntiSymmetricMatrix ? 'антисиметричне' : 'не антисиметричне'}`}</p>
 
-      <div className="flex mb-3 items-center">
-        <TeX className="mr-1" math={comparator.math}/>
-        <TeX className="mr-1" math='\circ'/>
-        <TeX className="mr-1" math={comparator.math}/>
-        <TeX className="mr-1" math='='/>
-        <TeX math={matrixToLatex(matrix)}/>
-        <TeX className="mr-1" math='\circ'/>
-        <TeX math={matrixToLatex(matrix)}/>
-        <TeX className="mr-1" math='='/>
-        <TeX className="mr-1" math={matrixToLatex(compositionMatrixForTransitive)}/>
-        {isTransitiveMatrix ? <TeX className="mr-1" math='\subset'/> : <TeX className="mr-1" math='\not\subset'/>}
-        <TeX math={comparator.math}/>
+      <div className="mb-5">
+        <div className="flex mb-3 items-center">
+          <TeX className="mr-1" math={comparator.math}/>
+          <TeX className="mr-1" math='\circ'/>
+          <TeX className="mr-1" math={comparator.math}/>
+          <TeX className="mr-1" math='='/>
+          <TeX math={matrixToLatex(matrix)}/>
+          <TeX className="mr-1" math='\circ'/>
+          <TeX math={matrixToLatex(matrix)}/>
+          <TeX className="mr-1" math='='/>
+          <TeX className="mr-1" math={matrixToLatex(compositionMatrixForTransitive)}/>
+          {isTransitiveMatrix ? <TeX className="mr-1" math='\subset'/> : <TeX className="mr-1" math='\not\subset'/>}
+          <TeX math={comparator.math}/>
+        </div>
+        <p>{`Отже, данне відношення  ${isTransitiveMatrix ? 'транзитивне' : 'не транзитивне'}`}</p>
       </div>
-      <p>{`Отже, данне відношення  ${isTransitiveMatrix ? 'транзитивне' : 'не транзитивне'}`}</p>
+
+      <p className="mb-5">{`Дане відношення  ${!isASymmetricMatrix ? 'циклічне' : 'не циклічне'}`}</p>
+      <p className="mb-5">{`Дане відношення  ${isASymmetricMatrix ? 'ациклічне' : 'не ациклічне'}`}</p>
 
       <p className="m-3">1.9) Композіція бінарних відношень:</p>
       <div className="flex items-center">
