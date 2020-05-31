@@ -49,6 +49,7 @@ function Task3() {
   const [isTransitiveMatrix, setIsTransitiveMatrix] = useState(false);
   const [secondMatrix, setSecondMatrix] = useState([]);
   const [resultMatrix, setResultMatrix] = useState([]);
+  const [diagonalMatrix, setDiagonalMatrix] = useState([]);
   const [compositionMatrixForTransitive, setCompositionMatrixForTransitive] = useState([]);
   const [binaryRelation, setBinaryRelation] = useState([]);
   const [additionBinaryRelation, setAdditionBinaryRelation] = useState([]);
@@ -65,6 +66,9 @@ function Task3() {
   const clone = (items) => items.map(item => Array.isArray(item) ? clone(item) : item);
 
   useEffect(() => {
+  }, []);
+
+  useEffect(() => {
     setBinaryRelation(createBinaryRelation(array, is, comparator.value, false));
     setAdditionBinaryRelation(createBinaryRelation(array, not, comparator.value, false));
     setReverseBinaryRelation(createBinaryRelation(array, is, comparator.value, true));
@@ -73,6 +77,9 @@ function Task3() {
     const zeroMatrix = clone(zeroArray.map(() => zeroArray));
     const filledMatrix = fillMatrix(zeroMatrix, comparator.value);
     setMatrix(filledMatrix);
+    console.log('setDiagonalMatrix');
+    console.log(zeroMatrix);
+    setDiagonalMatrix(fillMatrix(zeroMatrix, comparatorsObj.eq.value));
     const graph = generateGraph(filledMatrix, array);
     setGraph(graph);
   }, [comparator, array]);
@@ -108,27 +115,27 @@ function Task3() {
   }
 
   const binaryRelationToMatrix = (br) => {
-     const zeroArray = fill(Array(array.length), 0);
-     const zeroMatrix = clone(zeroArray.map(() => zeroArray));
-     for (const b of br) {
-       zeroMatrix[b[0]][b[1]] = 1;
-     }
+    const zeroArray = fill(Array(array.length), 0);
+    const zeroMatrix = clone(zeroArray.map(() => zeroArray));
+    for (const b of br) {
+      zeroMatrix[b[0]][b[1]] = 1;
+    }
     return zeroMatrix;
   }
 
   const compositionOfMatrix = (matrix, secondMatrix) => {
-     const BR1 = matrixToBinaryRelation(matrix);
-     const BR2 = matrixToBinaryRelation(secondMatrix);
-     const zeroArray = fill(Array(array.length), 0);
-     const zeroMatrix = clone(zeroArray.map(() => zeroArray));
-     for (const br1 of BR1) {
-       for (const br2 of BR2) {
-         if (br1[1] === br2[0]) {
-           zeroMatrix[br1[0]][br2[1]] = 1;
-         }
-       }
-     }
-     return zeroMatrix;
+    const BR1 = matrixToBinaryRelation(matrix);
+    const BR2 = matrixToBinaryRelation(secondMatrix);
+    const zeroArray = fill(Array(array.length), 0);
+    const zeroMatrix = clone(zeroArray.map(() => zeroArray));
+    for (const br1 of BR1) {
+      for (const br2 of BR2) {
+        if (br1[1] === br2[0]) {
+          zeroMatrix[br1[0]][br2[1]] = 1;
+        }
+      }
+    }
+    return zeroMatrix;
   }
 
   const binaryRelationsIncludes = (br1, br2) => {
@@ -136,7 +143,7 @@ function Task3() {
     for (const b1 of br1) {
       for (const b2 of br2) {
         if (b1[0] === b2[0] && b1[1] === b2[1]) {
-          matchCount+=1;
+          matchCount += 1;
         }
       }
     }
@@ -191,7 +198,7 @@ function Task3() {
     let count = 0;
     for (const indexe of indexes) {
       if (matrix[indexe[0]][indexe[1]] === 1) {
-        count+=1;
+        count += 1;
       }
     }
     return matrix.length === count;
@@ -204,8 +211,9 @@ function Task3() {
       setASymmetricMatrix(checkASymmetricMatrix(matrix));
       setAntiSymmetricMatrix(checkAntiSymmetricMatrix(matrix));
       checkTransitiveMatrix(matrix);
+
     }
-  }, [matrix, secondMatrix]);
+  }, [matrix]);
 
 
   useEffect(() => {
@@ -231,14 +239,15 @@ function Task3() {
   }
 
   const fillMatrix = (zeroMatrix, comparator) => {
-    for (let i = 0; i < zeroMatrix.length; i++) {
-      for (let j = 0; j < zeroMatrix[i].length; j++) {
+    const copy = clone(zeroMatrix);
+    for (let i = 0; i < copy.length; i++) {
+      for (let j = 0; j < copy[i].length; j++) {
         if (comparatorsObj[comparator].func(i, j)) {
-          zeroMatrix[i][j] = 1;
+          copy[i][j] = 1;
         }
       }
     }
-    return zeroMatrix;
+    return copy;
   }
 
   const addTitleToMatrix = (matrix, titles) => {
@@ -277,7 +286,7 @@ function Task3() {
   const handleChange = value => setComparator(value);
   const handleSecondChange = value => setSecondComparator(value);
   const binaryRelationToString = binaryRelation => binaryRelation.map(a => a.join(', ')).map(a => `(${a})`).join(', ');
-  const matrixToLatex  = (mathExp) => String.raw`\begin{pmatrix}${mathExp.map(i => i.join(' & ')).join("\\\\\n")}\end{pmatrix}`;
+  const matrixToLatex = (mathExp) => String.raw`\begin{pmatrix}${mathExp.map(i => i.join(' & ')).join("\\\\\n")}\end{pmatrix}`;
 
   return (
     <>
@@ -298,62 +307,65 @@ function Task3() {
         initial={secondComparator.value}
         comparatorChanged={handleSecondChange}
       />
-      <p className="m-3">1.2) Бінарне
+      <p className="mb-3">1.2) Бінарне
         відношення: {binaryRelationToString(binaryRelation)}</p>
-      <p className="m-3">1.5) Доповнення до бінарного
+      <p className="mb-3">1.5) Доповнення до бінарного
         відношення: {binaryRelationToString(additionBinaryRelation)}</p>
-      <p className="m-3">1.7) Обернене бінарне
+      <p className="mb-3">1.7) Обернене бінарне
         відношення: {binaryRelationToString(reverseBinaryRelation)}</p>
-      <p className="m-3">1.8) Двоїсте бінарне
+      <p className="mb-3">1.8) Двоїсте бінарне
         відношення: {binaryRelationToString(dualBinaryRelation)}</p>
-      <p className="m-3">1.3) Бінарне відношення у матричному вигляді:</p>
-      <MatrixTable matrix={matrix}/>
-      <p>{`Оскільки у матриці на головній діагоналі стоять ${isReflectMatrix ? 'одиниці': 'нулі'}, то воно ${isReflectMatrix ? 'рефлексивне': 'не є рефлексивним'}`}</p>
-      <p>{`Оскільки відношення ${isReflectMatrix ? 'рефлексивне': 'не рефлексивне'}, то воно ${isReflectMatrix ? 'не антирефлексивне': 'антирефлексивне'}`}</p>
-      <p>{`Дане відношення  ${isSymmetricMatrix ? 'симетричне': 'не симетричне'}`}</p>
-      <p>{`Дане відношення  ${isASymmetricMatrix ? 'aсиметричне': 'не aсиметричне'}`}</p>
-      <p className="mb-5">{`Дане відношення  ${isAntiSymmetricMatrix ? 'антисиметричне': 'не антисиметричне'}`}</p>
 
-      <div className="flex mb-3">
-        <div className="flex mr-2 items-center">
-          <TeX className="mr-1" math={comparator.math}/>
-          <TeX className="mr-1" math='\circ'/>
-          <TeX className="mr-1" math={comparator.math}/>
-          <TeX className="mr-1" math='='/>
-          <TeX math={matrixToLatex(matrix)}/>
-        </div>
-        <div className="flex mr-2 items-center">
-          <TeX className="mr-1" math='\circ'/>
-          <TeX math={matrixToLatex(matrix)}/>
-        </div>
-        <div className="flex items-center">
-          <TeX className="mr-1" math='='/>
-          <TeX className="mr-1" math={matrixToLatex(compositionMatrixForTransitive)}/>
-        </div>
-        <div className="flex items-center">
-          {isTransitiveMatrix ?  <TeX className="mr-1" math='\subset'/> : <TeX className="mr-1" math='\not\subset'/> }
-          <TeX math={comparator.math}/>
-        </div>
+      <div className="mb-5">
+        <p className="mb-3">1.3) Бінарне відношення у матричному вигляді:</p>
+        <MatrixTable matrix={matrix}/>
       </div>
-      <p>{`Отже, данне відношення  ${isTransitiveMatrix ? 'транзитивне': 'не транзитивне'}`}</p>
+
+      <div className="mb-5">
+        <div className="mb-3">
+          <i>Рефлексивність:</i>
+        </div>
+        <div className="flex mb-3 items-center">
+          <TeX math='E='/>
+          <TeX math={matrixToLatex(diagonalMatrix)}/>
+          {isReflectMatrix ? <TeX className="mr-1" math='\subset'/> : <TeX className="mr-1" math='\not\subset'/>}
+          <TeX math={comparator.math}/>
+          <TeX math=', E - діагональне \, відношення'/>
+        </div>
+        <p>{`Оскільки у матриці на головній діагоналі стоять ${isReflectMatrix ? 'одиниці' : 'нулі'}, то воно ${isReflectMatrix ? 'рефлексивне' : 'не є рефлексивним'}`}</p>
+      </div>
+
+      <p>{`Оскільки відношення ${isReflectMatrix ? 'рефлексивне' : 'не рефлексивне'}, то воно ${isReflectMatrix ? 'не антирефлексивне' : 'антирефлексивне'}`}</p>
+      <p>{`Дане відношення  ${isSymmetricMatrix ? 'симетричне' : 'не симетричне'}`}</p>
+      <p>{`Дане відношення  ${isASymmetricMatrix ? 'aсиметричне' : 'не aсиметричне'}`}</p>
+      <p className="mb-5">{`Дане відношення  ${isAntiSymmetricMatrix ? 'антисиметричне' : 'не антисиметричне'}`}</p>
+
+      <div className="flex mb-3 items-center">
+        <TeX className="mr-1" math={comparator.math}/>
+        <TeX className="mr-1" math='\circ'/>
+        <TeX className="mr-1" math={comparator.math}/>
+        <TeX className="mr-1" math='='/>
+        <TeX math={matrixToLatex(matrix)}/>
+        <TeX className="mr-1" math='\circ'/>
+        <TeX math={matrixToLatex(matrix)}/>
+        <TeX className="mr-1" math='='/>
+        <TeX className="mr-1" math={matrixToLatex(compositionMatrixForTransitive)}/>
+        {isTransitiveMatrix ? <TeX className="mr-1" math='\subset'/> : <TeX className="mr-1" math='\not\subset'/>}
+        <TeX math={comparator.math}/>
+      </div>
+      <p>{`Отже, данне відношення  ${isTransitiveMatrix ? 'транзитивне' : 'не транзитивне'}`}</p>
 
       <p className="m-3">1.9) Композіція бінарних відношень:</p>
-      <div className="flex">
-        <div className="flex mr-2 items-center">
-          <TeX className="mr-1" math={comparator.math}/>
-          <TeX className="mr-1" math='\circ'/>
-          <TeX className="mr-1" math={secondComparator.math}/>
-          <TeX className="mr-1" math='='/>
-          <TeX math={matrixToLatex(matrix)}/>
-        </div>
-        <div className="flex mr-2 items-center">
-          <TeX className="mr-1" math='\circ'/>
-          <TeX math={matrixToLatex(secondMatrix)}/>
-        </div>
-        <div className="flex items-center">
-          <TeX className="mr-1" math='='/>
-          <TeX className="mr-1" math={matrixToLatex(resultMatrix)}/>
-        </div>
+      <div className="flex items-center">
+        <TeX className="mr-1" math={comparator.math}/>
+        <TeX className="mr-1" math='\circ'/>
+        <TeX className="mr-1" math={secondComparator.math}/>
+        <TeX className="mr-1" math='='/>
+        <TeX math={matrixToLatex(matrix)}/>
+        <TeX className="mr-1" math='\circ'/>
+        <TeX math={matrixToLatex(secondMatrix)}/>
+        <TeX className="mr-1" math='='/>
+        <TeX className="mr-1" math={matrixToLatex(resultMatrix)}/>
       </div>
 
       <p className="m-3">1.3) Бінарне відношення у вигляді орієнтованого графа:</p>
