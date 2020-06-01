@@ -12,6 +12,8 @@ import 'katex/dist/katex.min.css';
 
 import RelationSelector from "./relation-select/RelationSelector";
 import {comparatorsObj} from "./relation-select/comparators";
+import OperationSelector from "../../UI/operator-select/OperationSelector";
+import {operationsObj} from "../../UI/operator-select/operations";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -49,7 +51,9 @@ function Task3() {
   const [diagonalMatrix, setDiagonalMatrix] = useState([]);
   const [compositionMatrixForTransitive, setCompositionMatrixForTransitive] = useState([]);
   const [binaryRelation, setBinaryRelation] = useState([]);
+  const [unionOfBinaryRelations, setUnionOfBinaryRelations] = useState([]);
   const [secondBinaryRelation, setSecondBinaryRelation] = useState([]);
+  const [operation, setOperation] = useState(operationsObj.union);
   const [additionBinaryRelation, setAdditionBinaryRelation] = useState([]);
   const [reverseBinaryRelation, setReverseBinaryRelation] = useState([]);
   const [dualBinaryRelation, setDualBinaryRelation] = useState([]);
@@ -240,6 +244,22 @@ function Task3() {
     }
   }, [matrix]);
 
+  const getUnionOfBinaryRelation = (br1, br2) => {
+    const unionObj = {};
+    for (const b1 of br1) {
+      for (const b2 of br2) {
+        if (b1[0] !== b2[0] || b1[1] !== b2[1]) {
+          unionObj[`${b1[0]}${b1[1]}`] = b1;
+          unionObj[`${b2[0]}${b2[1]}`] = b2;
+        }
+      }
+    }
+    return Object.values(unionObj);
+  }
+
+  useEffect(() => {
+    setUnionOfBinaryRelations(getUnionOfBinaryRelation(binaryRelation, secondBinaryRelation));
+  }, [binaryRelation, secondBinaryRelation, operation]);
 
   const matrixIsSubset = (matrix, secondMatrix) => {
     let matchCount = 0;
@@ -322,6 +342,7 @@ function Task3() {
   }
 
   const handleChange = value => setComparator(value);
+  const handleOperationChange = value => setOperation(value);
   const handleSecondChange = value => setSecondComparator(value);
   const binaryRelationToString = binaryRelation => binaryRelation.map(a => a.join(', ')).map(a => `(${a})`).join(', ');
   const matrixToLatex = (mathExp) => String.raw`\begin{pmatrix}${mathExp.map(i => i.join(' & ')).join("\\\\\n")}\end{pmatrix}`;
@@ -347,6 +368,8 @@ function Task3() {
       />
       <p className="mb-3">1.2) Бінарне
         відношення: {binaryRelationToString(binaryRelation)}</p>
+      <p className="mb-3">Бінарне
+        відношення 2: {binaryRelationToString(secondBinaryRelation)}</p>
       <p className="mb-3">1.5) Доповнення до бінарного
         відношення: {binaryRelationToString(additionBinaryRelation)}</p>
       <p className="mb-3">1.7) Обернене бінарне
@@ -378,6 +401,11 @@ function Task3() {
         <div className="mb-3">
           <i>1.6. Побудувати бінарні відношення, які є об’єднанням, перетином і різницею бінарних відношень: </i>
         </div>
+       <OperationSelector
+         initial={operation.value}
+         comparatorChanged={handleOperationChange}
+       />
+       <p className="mb-3">Бінарне відношення {binaryRelationToString(unionOfBinaryRelations)}</p>
       </div>
 
       <div className="mb-5">

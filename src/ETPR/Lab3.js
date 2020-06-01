@@ -124,8 +124,6 @@ function Lab3() {
     //     history.push(...copy);
     //   }
     // }
-    // console.log(copy);
-    // console.log(history);
   }, [evaluated]);
 
   return (
