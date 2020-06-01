@@ -5,14 +5,13 @@ import TextField from "@material-ui/core/TextField";
 import {makeStyles} from "@material-ui/core/styles";
 
 import fill from 'lodash/fill';
-import Graph from "react-graph-vis";
 import {product} from "iter-tools/es2015";
+import Graph from "react-graph-vis";
+import TeX from "@matejmazur/react-katex";
 import 'katex/dist/katex.min.css';
 
 import RelationSelector from "./RelationSelector";
-import MatrixTable from "./MatrixTable";
 import {comparatorsObj} from "./comparators";
-import TeX from "@matejmazur/react-katex";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -43,6 +42,7 @@ function Task3() {
   const [graph, setGraph] = useState(initialGraph);
   const [matrix, setMatrix] = useState([]);
   const [isReflectMatrix, setIsReflectMatrix] = useState(false);
+  const [isSubsetMatrix, setIsSubsetMatrix] = useState(false);
   const [isSymmetricMatrix, setIsSymmetricMatrix] = useState(false);
   const [isASymmetricMatrix, setIsASymmetricMatrix] = useState(false);
   const [isAntiSymmetricMatrix, setIsAntiSymmetricMatrix] = useState(false);
@@ -244,9 +244,22 @@ function Task3() {
   }, [matrix]);
 
 
+  const matrixIsSubset = (matrix, secondMatrix) => {
+    let matchCount = 0;
+    for (let i = 0; i < matrix.length; i++) {
+      for (let j = 0; j < matrix[i].length; j++) {
+        if (Boolean(matrix[i][j]) && (matrix[i][j] === secondMatrix[i][j])) {
+          matchCount+=1;
+        }
+      }
+    }
+    return binaryRelation.length === matchCount;
+  }
+
   useEffect(() => {
     if (matrix.length) {
       setResultMatrix(compositionOfMatrix(matrix, secondMatrix));
+      setIsSubsetMatrix(matrixIsSubset(matrix, secondMatrix));
     }
   }, [matrix, secondMatrix]);
 
@@ -346,7 +359,21 @@ function Task3() {
 
       <div className="mb-5">
         <p className="mb-3">1.3) Бінарне відношення у матричному вигляді:</p>
-        <MatrixTable matrix={matrix}/>
+        <TeX math={matrixToLatex(matrix)}/>
+      </div>
+
+      <div className="mb-5">
+        <div className="mb-3">
+          <i>1.4. З’ясувати які з бінарних відношень із завдання 1.2 вкладаються (строго вкладаються) в інші бінарні
+            відношення. </i>
+        </div>
+        <TeX className="mr-1" math={comparator.math}/>
+        {isSubsetMatrix ? <TeX className="mr-1" math='\subset'/> : <TeX className="mr-1" math='\not\subset'/>}
+        <TeX className="mr-1" math={secondComparator.math}/>
+        <TeX className="mr-1" math='='/>
+        <TeX math={matrixToLatex(matrix)}/>
+        {isSubsetMatrix ? <TeX className="mr-1" math='\subset'/> : <TeX className="mr-1" math='\not\subset'/>}
+        <TeX math={matrixToLatex(secondMatrix)}/>
       </div>
 
       <div className="mb-5">
@@ -384,6 +411,9 @@ function Task3() {
       <p className="mb-5">{`Дане відношення  ${isAntiSymmetricMatrix ? 'антисиметричне' : 'не антисиметричне'}`}</p>
 
       <div className="mb-5">
+        <div className="mb-3">
+          <i>Транзитивність:</i>
+        </div>
         <div className="flex mb-3 items-center">
           <TeX className="mr-1" math={comparator.math}/>
           <TeX className="mr-1" math='\circ'/>
