@@ -7,7 +7,7 @@ import Zet from "zet";
 import {useDebouncedCallback} from "use-debounce";
 
 import SelectableVenn from "./Venn/SelectableVenn";
-import OperationSelector from "../UI/OperationSelector";
+import OperationSelector from "../UI/operator-select/OperationSelector";
 
 const useStyles = makeStyles(theme => ({
   root: {

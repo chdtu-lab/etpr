@@ -8,6 +8,7 @@ import {makeStyles} from "@material-ui/core/styles";
 
 import TeX from "@matejmazur/react-katex";
 
+import {operationsObj} from "./operations";
 
 const useStyles = makeStyles(theme => ({
   formControl: {
@@ -20,6 +21,7 @@ const useStyles = makeStyles(theme => ({
 function OperationSelector({initial, comparatorChanged}) {
   const classes = useStyles();
   const handleChange = event => comparatorChanged(event.target.value);
+  const keys = Object.keys(operationsObj);
 
   return (
     <FormControl className={classes.formControl}>
@@ -30,15 +32,11 @@ function OperationSelector({initial, comparatorChanged}) {
         value={initial}
         onChange={handleChange}
       >
-        <MenuItem value={'union'}>
-          <TeX className="mr-1" math="A \cup B"/>- Об'єднання
-        </MenuItem>
-        <MenuItem value={'intersection'}>
-          <TeX className="mr-1" math="A \cap B"/>- Перетин
-        </MenuItem>
-        <MenuItem value={'difference'}>
-          <TeX className="mr-1" math="A \setminus B"/>- Різниця
-        </MenuItem>
+        {keys.map(o => (
+          <MenuItem value={operationsObj[o].value}>
+            <TeX className="mr-1" math={operationsObj[o].math}/>- {operationsObj[o].label}
+          </MenuItem>
+        ))}
       </Select>
     </FormControl>
   );

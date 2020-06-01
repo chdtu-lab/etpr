@@ -10,8 +10,8 @@ import Graph from "react-graph-vis";
 import TeX from "@matejmazur/react-katex";
 import 'katex/dist/katex.min.css';
 
-import RelationSelector from "./RelationSelector";
-import {comparatorsObj} from "./comparators";
+import RelationSelector from "./relation-select/RelationSelector";
+import {comparatorsObj} from "./relation-select/comparators";
 
 const useStyles = makeStyles(theme => ({
   root: {
