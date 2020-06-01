@@ -8,7 +8,6 @@ import {makeStyles} from "@material-ui/core/styles";
 
 import TeX from "@matejmazur/react-katex";
 
-import {comparatorsObj} from "./comparators";
 
 const useStyles = makeStyles(theme => ({
   formControl: {
@@ -18,32 +17,31 @@ const useStyles = makeStyles(theme => ({
 }));
 
 
-function RelationSelector({initial, comparatorChanged}) {
+function OperationSelector({initial, comparatorChanged}) {
   const classes = useStyles();
-  const handleChange = event => comparatorChanged({
-    value: event.target.value,
-    math: comparatorsObj[event.target.value].math
-  });
-
-  const keys = Object.keys(comparatorsObj);
+  const handleChange = event => comparatorChanged(event.target.value);
 
   return (
     <FormControl className={classes.formControl}>
-      <InputLabel id="demo-simple-select-label">Відношення</InputLabel>
+      <InputLabel id="demo-simple-select-label">Операція</InputLabel>
       <Select
         labelId="demo-simple-select-label"
         id="demo-simple-select"
         value={initial}
         onChange={handleChange}
       >
-        {keys.map(c => (
-          <MenuItem value={comparatorsObj[c].value}>
-            <TeX className="mr-1" math={comparatorsObj[c].math}/>- {comparatorsObj[c].label}
-          </MenuItem>
-        ))}
+        <MenuItem value={'union'}>
+          <TeX className="mr-1" math="A \cup B"/>- Об'єднання
+        </MenuItem>
+        <MenuItem value={'intersection'}>
+          <TeX className="mr-1" math="A \cap B"/>- Перетин
+        </MenuItem>
+        <MenuItem value={'difference'}>
+          <TeX className="mr-1" math="A \setminus B"/>- Різниця
+        </MenuItem>
       </Select>
     </FormControl>
   );
 }
 
-export default RelationSelector;
+export default OperationSelector;

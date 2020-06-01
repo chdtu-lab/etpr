@@ -19,11 +19,6 @@ const useStyles = makeStyles(theme => ({
       margin: theme.spacing(1),
       width: 200,
     },
-  },
-
-  formControl: {
-    margin: theme.spacing(1),
-    minWidth: 120,
   }
 }));
 
@@ -54,6 +49,7 @@ function Task3() {
   const [diagonalMatrix, setDiagonalMatrix] = useState([]);
   const [compositionMatrixForTransitive, setCompositionMatrixForTransitive] = useState([]);
   const [binaryRelation, setBinaryRelation] = useState([]);
+  const [secondBinaryRelation, setSecondBinaryRelation] = useState([]);
   const [additionBinaryRelation, setAdditionBinaryRelation] = useState([]);
   const [reverseBinaryRelation, setReverseBinaryRelation] = useState([]);
   const [dualBinaryRelation, setDualBinaryRelation] = useState([]);
@@ -72,6 +68,7 @@ function Task3() {
 
   useEffect(() => {
     setBinaryRelation(createBinaryRelation(array, is, comparator.value, false));
+    setSecondBinaryRelation(createBinaryRelation(array, is, secondComparator.value, false));
     setAdditionBinaryRelation(createBinaryRelation(array, not, comparator.value, false));
     setReverseBinaryRelation(createBinaryRelation(array, is, comparator.value, true));
     setDualBinaryRelation(createBinaryRelation(array, not, comparator.value, true));
@@ -79,7 +76,7 @@ function Task3() {
     const zeroArray = fill(Array(array.length), 0);
     const zeroMatrix = clone(zeroArray.map(() => zeroArray));
     setDiagonalMatrix(fillMatrix(zeroMatrix, comparatorsObj.eq.value));
-  }, [comparator, array]);
+  }, [comparator, secondComparator, array]);
 
   useEffect(() => {
     setMatrix(binaryRelationToMatrix(binaryRelation))
@@ -374,6 +371,13 @@ function Task3() {
         <TeX math={matrixToLatex(matrix)}/>
         {isSubsetMatrix ? <TeX className="mr-1" math='\subset'/> : <TeX className="mr-1" math='\not\subset'/>}
         <TeX math={matrixToLatex(secondMatrix)}/>
+      </div>
+
+
+       <div className="mb-5">
+        <div className="mb-3">
+          <i>1.6. Побудувати бінарні відношення, які є об’єднанням, перетином і різницею бінарних відношень: </i>
+        </div>
       </div>
 
       <div className="mb-5">

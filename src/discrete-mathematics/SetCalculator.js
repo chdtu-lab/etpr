@@ -1,15 +1,13 @@
 import React, {useEffect, useState} from "react";
-import {useDebouncedCallback} from "use-debounce";
+
 import TextField from "@material-ui/core/TextField";
 import {makeStyles} from "@material-ui/core/styles";
-import FormControl from "@material-ui/core/FormControl";
-import InputLabel from "@material-ui/core/InputLabel";
-import Select from "@material-ui/core/Select";
-import MenuItem from "@material-ui/core/MenuItem";
-import TeX from "@matejmazur/react-katex";
+
 import Zet from "zet";
+import {useDebouncedCallback} from "use-debounce";
+
 import SelectableVenn from "./Venn/SelectableVenn";
-import SelectableVennClass from "./Venn/SelectableVennClass";
+import OperationSelector from "../UI/OperationSelector";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -17,10 +15,6 @@ const useStyles = makeStyles(theme => ({
       margin: theme.spacing(1),
       width: 200,
     },
-  },
-  formControl: {
-    margin: theme.spacing(1),
-    minWidth: 120,
   }
 }));
 
@@ -52,7 +46,7 @@ export default function SetCalculator() {
   
   const [debouncedCallbackA1] = useDebouncedCallback(value => setValueA1(value.split(',').map(Number)),1000);
   const [debouncedCallbackB1] = useDebouncedCallback(value => setValueB1(value.split(',').map(Number)),1000);
-  const handleChange = event => setOperation(event.target.value);
+  const handleChange = value => setOperation(value);
   const setToString = set => Array.from(set).sort((a, b) => a-b).join(', ');
   
   return (
@@ -64,25 +58,10 @@ export default function SetCalculator() {
           label="A"
           onChange={e => debouncedCallbackA1(e.target.value)}
         />
-        <FormControl className={classes.formControl}>
-          <InputLabel id="demo-simple-select-label">Відношення</InputLabel>
-          <Select
-            labelId="demo-simple-select-label"
-            id="demo-simple-select"
-            value={operation}
-            onChange={handleChange}
-          >
-            <MenuItem value={'union'}>
-              <TeX className="mr-1" math="A \cup B"/>- Об'єднання
-            </MenuItem>
-            <MenuItem value={'intersection'}>
-              <TeX className="mr-1" math="A \cap B"/>- Перетин
-            </MenuItem>
-            <MenuItem value={'difference'}>
-              <TeX className="mr-1" math="A \setminus B"/>- Різниця
-            </MenuItem>
-          </Select>
-        </FormControl>
+        <OperationSelector
+          initial={operation}
+          comparatorChanged={handleChange}
+        />
         <TextField
           id="standard-basic"
           defaultValue={valueB1}
