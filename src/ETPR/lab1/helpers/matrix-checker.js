@@ -54,4 +54,16 @@ export class MatrixChecker {
     }
     return true
   }
+
+  static matrixIsSubset = (br, matrix, secondMatrix) => {
+    let matchCount = 0;
+    for (let i = 0; i < matrix.length; i++) {
+      for (let j = 0; j < matrix[i].length; j++) {
+        if (Boolean(matrix[i][j]) && (matrix[i][j] === secondMatrix[i][j])) {
+          matchCount += 1;
+        }
+      }
+    }
+    return br.length === matchCount;
+  }
 }

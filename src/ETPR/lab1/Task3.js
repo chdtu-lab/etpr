@@ -16,6 +16,7 @@ import OperationSelector from "../../UI/operator-select/OperationSelector";
 import {operationsObj} from "../../UI/operator-select/operations";
 import {MatrixChecker} from "./helpers/matrix-checker";
 import {GraphHelper} from "./helpers/graph-helper";
+import {Transformer} from "./helpers/transformer";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -70,9 +71,6 @@ function Task3() {
   const clone = (items) => items.map(item => Array.isArray(item) ? clone(item) : item);
 
   useEffect(() => {
-  }, []);
-
-  useEffect(() => {
     setBinaryRelation(createBinaryRelation(array, is, comparator.value, false));
     setSecondBinaryRelation(createBinaryRelation(array, is, secondComparator.value, false));
     setAdditionBinaryRelation(createBinaryRelation(array, not, comparator.value, false));
@@ -85,7 +83,7 @@ function Task3() {
   }, [comparator, secondComparator, array]);
 
   useEffect(() => {
-    setMatrix(binaryRelationToMatrix(binaryRelation))
+    setMatrix(Transformer.binaryRelationToMatrix(binaryRelation, array))
   }, [binaryRelation]);
 
   useEffect(() => {
@@ -106,30 +104,9 @@ function Task3() {
     })
   }
 
-  const matrixToBinaryRelation = (matrix) => {
-    const BR = [];
-    for (let i = 0; i < matrix.length; i++) {
-      for (let j = 0; j < matrix[i].length; j++) {
-        if (matrix[i][j] === 1) {
-          BR.push([array[i], array[j]]);
-        }
-      }
-    }
-    return BR;
-  }
-
-  const binaryRelationToMatrix = (br) => {
-    const zeroArray = fill(Array([...new Set(br.flat())].length), 0);
-    const zeroMatrix = clone(zeroArray.map(() => zeroArray));
-    for (const b of br) {
-      zeroMatrix[array.indexOf(b[0])][array.indexOf(b[1])] = 1;
-    }
-    return zeroMatrix;
-  }
-
   const compositionOfMatrix = (matrix, secondMatrix) => {
-    const BR1 = matrixToBinaryRelation(matrix);
-    const BR2 = matrixToBinaryRelation(secondMatrix);
+    const BR1 = Transformer.matrixToBinaryRelation(matrix, array);
+    const BR2 = Transformer.matrixToBinaryRelation(secondMatrix, array);
     const zeroArray = fill(Array(matrix.length), 0);
     const zeroMatrix = clone(zeroArray.map(() => zeroArray));
     for (const br1 of BR1) {
@@ -156,9 +133,9 @@ function Task3() {
 
   const checkTransitiveMatrix = (matrix) => {
     if (matrix.length) {
-      const compositionOfBR = matrixToBinaryRelation(compositionOfMatrix(matrix, matrix));
-      const br = matrixToBinaryRelation(matrix);
-      const compositionMatrix = binaryRelationToMatrix(compositionOfBR);
+      const compositionOfBR = Transformer.matrixToBinaryRelation(compositionOfMatrix(matrix, matrix), array);
+      const br = Transformer.matrixToBinaryRelation(matrix, array);
+      const compositionMatrix = Transformer.binaryRelationToMatrix(compositionOfBR, array);
       setCompositionMatrixForTransitive(compositionMatrix);
       return binaryRelationsIncludes(br, compositionOfBR);
     }
@@ -196,22 +173,10 @@ function Task3() {
     setResultOfOperationOnBinaryRelations(operationsObj[operation.value].brOperation(binaryRelation, secondBinaryRelation));
   }, [binaryRelation, secondBinaryRelation, operation]);
 
-  const matrixIsSubset = (matrix, secondMatrix) => {
-    let matchCount = 0;
-    for (let i = 0; i < matrix.length; i++) {
-      for (let j = 0; j < matrix[i].length; j++) {
-        if (Boolean(matrix[i][j]) && (matrix[i][j] === secondMatrix[i][j])) {
-          matchCount += 1;
-        }
-      }
-    }
-    return binaryRelation.length === matchCount;
-  }
-
   useEffect(() => {
     if (matrix.length) {
       setResultMatrix(compositionOfMatrix(matrix, secondMatrix));
-      setIsSubsetMatrix(matrixIsSubset(matrix, secondMatrix));
+      setIsSubsetMatrix(MatrixChecker.matrixIsSubset(binaryRelation, matrix, secondMatrix));
     }
   }, [matrix, secondMatrix]);
 
@@ -243,28 +208,9 @@ function Task3() {
     return copy;
   }
 
-  const addTitleToMatrix = (matrix, titles) => {
-    for (let i = 0; i < matrix.length; i++) {
-      for (let j = 0; j < matrix[i].length; j++) {
-        if (i === 0 && j !== 0) {
-          matrix[0][j] = titles[j - 1];
-        }
-        if (j === 0 && i !== 0) {
-          matrix[i][0] = titles[i - 1];
-        }
-        if (j === 0 && i === 0) {
-          matrix[i][0] = '--';
-        }
-      }
-    }
-    return matrix;
-  }
-
   const handleChange = value => setComparator(value);
   const handleOperationChange = value => setOperation(value);
   const handleSecondChange = value => setSecondComparator(value);
-  const binaryRelationToString = binaryRelation => binaryRelation.map(a => a.join(', ')).map(a => `(${a})`).join(', ');
-  const matrixToLatex = (mathExp) => String.raw`\begin{pmatrix}${mathExp.map(i => i.join(' & ')).join("\\\\\n")}\end{pmatrix}`;
 
   return (
     <>
@@ -286,19 +232,19 @@ function Task3() {
         comparatorChanged={handleSecondChange}
       />
       <p className="mb-3">1.2) Бінарне
-        відношення: {binaryRelationToString(binaryRelation)}</p>
+        відношення: {Transformer.binaryRelationToString(binaryRelation)}</p>
       <p className="mb-3">Бінарне
-        відношення 2: {binaryRelationToString(secondBinaryRelation)}</p>
+        відношення 2: {Transformer.binaryRelationToString(secondBinaryRelation)}</p>
       <p className="mb-3">1.5) Доповнення до бінарного
-        відношення: {binaryRelationToString(additionBinaryRelation)}</p>
+        відношення: {Transformer.binaryRelationToString(additionBinaryRelation)}</p>
       <p className="mb-3">1.7) Обернене бінарне
-        відношення: {binaryRelationToString(reverseBinaryRelation)}</p>
+        відношення: {Transformer.binaryRelationToString(reverseBinaryRelation)}</p>
       <p className="mb-3">1.8) Двоїсте бінарне
-        відношення: {binaryRelationToString(dualBinaryRelation)}</p>
+        відношення: {Transformer.binaryRelationToString(dualBinaryRelation)}</p>
 
       <div className="mb-5">
         <p className="mb-3">1.3) Бінарне відношення у матричному вигляді:</p>
-        <TeX math={matrixToLatex(matrix)}/>
+        <TeX math={Transformer.matrixToLatex(matrix)}/>
       </div>
 
       <div className="mb-5">
@@ -310,9 +256,9 @@ function Task3() {
         {isSubsetMatrix ? <TeX className="mr-1" math='\subset'/> : <TeX className="mr-1" math='\not\subset'/>}
         <TeX className="mr-1" math={secondComparator.math}/>
         <TeX className="mr-1" math='='/>
-        <TeX math={matrixToLatex(matrix)}/>
+        <TeX math={Transformer.matrixToLatex(matrix)}/>
         {isSubsetMatrix ? <TeX className="mr-1" math='\subset'/> : <TeX className="mr-1" math='\not\subset'/>}
-        <TeX math={matrixToLatex(secondMatrix)}/>
+        <TeX math={Transformer.matrixToLatex(secondMatrix)}/>
       </div>
 
 
@@ -324,7 +270,7 @@ function Task3() {
           initial={operation.value}
           comparatorChanged={handleOperationChange}
         />
-        <p className="mb-3">Бінарне відношення {binaryRelationToString(resultOfOperationOnBinaryRelations)}</p>
+        <p className="mb-3">Бінарне відношення {Transformer.binaryRelationToString(resultOfOperationOnBinaryRelations)}</p>
       </div>
 
       <div className="mb-5">
@@ -333,7 +279,7 @@ function Task3() {
         </div>
         <div className="flex mb-3 items-center">
           <TeX math='E='/>
-          <TeX math={matrixToLatex(diagonalMatrix)}/>
+          <TeX math={Transformer.matrixToLatex(diagonalMatrix)}/>
           {isReflectMatrix ? <TeX className="mr-1" math='\subset'/> : <TeX className="mr-1" math='\not\subset'/>}
           <TeX math={comparator.math}/>
           <TeX math=', E - діагональне \, відношення'/>
@@ -351,7 +297,7 @@ function Task3() {
         <div className="flex items-center">
           <TeX className="mr-1" math={comparator.math.replace('R', 'R^{-1}')}/>
           <TeX className="mr-1" math='='/>
-          <TeX math={matrixToLatex(symmetricMatrix)}/>
+          <TeX math={Transformer.matrixToLatex(symmetricMatrix)}/>
           {isSymmetricMatrix ? <TeX math='='/> : <TeX math='\neq'/>}
           <TeX className="mr-1" math={comparator.math}/>
         </div>
@@ -370,11 +316,11 @@ function Task3() {
           <TeX className="mr-1" math='\circ'/>
           <TeX className="mr-1" math={comparator.math}/>
           <TeX className="mr-1" math='='/>
-          <TeX math={matrixToLatex(matrix)}/>
+          <TeX math={Transformer.matrixToLatex(matrix)}/>
           <TeX className="mr-1" math='\circ'/>
-          <TeX math={matrixToLatex(matrix)}/>
+          <TeX math={Transformer.matrixToLatex(matrix)}/>
           <TeX className="mr-1" math='='/>
-          <TeX className="mr-1" math={matrixToLatex(compositionMatrixForTransitive)}/>
+          <TeX className="mr-1" math={Transformer.matrixToLatex(compositionMatrixForTransitive)}/>
           {isTransitiveMatrix ? <TeX className="mr-1" math='\subset'/> : <TeX className="mr-1" math='\not\subset'/>}
           <TeX math={comparator.math}/>
         </div>
@@ -391,11 +337,11 @@ function Task3() {
         <TeX className="mr-1" math='\circ'/>
         <TeX className="mr-1" math={secondComparator.math}/>
         <TeX className="mr-1" math='='/>
-        <TeX math={matrixToLatex(matrix)}/>
+        <TeX math={Transformer.matrixToLatex(matrix)}/>
         <TeX className="mr-1" math='\circ'/>
-        <TeX math={matrixToLatex(secondMatrix)}/>
+        <TeX math={Transformer.matrixToLatex(secondMatrix)}/>
         <TeX className="mr-1" math='='/>
-        <TeX className="mr-1" math={matrixToLatex(resultMatrix)}/>
+        <TeX className="mr-1" math={Transformer.matrixToLatex(resultMatrix)}/>
       </div>
 
       <p className="m-3">1.3) Бінарне відношення у вигляді орієнтованого графа:</p>
