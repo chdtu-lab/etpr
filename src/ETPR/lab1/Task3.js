@@ -14,7 +14,8 @@ import RelationSelector from "./relation-select/RelationSelector";
 import {comparatorsObj} from "./relation-select/comparators";
 import OperationSelector from "../../UI/operator-select/OperationSelector";
 import {operationsObj} from "../../UI/operator-select/operations";
-import {OperationsOnRelations} from "./helpers/operations-on-relations";
+import {MatrixChecker} from "./helpers/matrix-checker";
+import {GraphHelper} from "./helpers/graph-helper";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -163,39 +164,6 @@ function Task3() {
     }
   }
 
-  const checkAntiSymmetricMatrix = (matrix) => {
-    for (let i = 0; i < matrix.length; i++) {
-      for (let j = 0; j < matrix[i].length; j++) {
-        if (Boolean(matrix[i][j]) && Boolean(matrix[j][i]) && !(i === j)) {
-          return false
-        }
-      }
-    }
-    return true
-  }
-
-  const checkASymmetricMatrix = (matrix) => {
-    for (let i = 0; i < matrix.length; i++) {
-      for (let j = 0; j < matrix[i].length; j++) {
-        if (Boolean(matrix[i][j]) && Boolean(matrix[j][i])) {
-          return false
-        }
-      }
-    }
-    return true
-  }
-
-  const checkSymmetricMatrix = (matrix) => {
-    for (let i = 0; i < matrix.length; i++) {
-      for (let j = 0; j < matrix[i].length; j++) {
-        if (!(matrix[i][j] === matrix[j][i])) {
-          return false
-        }
-      }
-    }
-    return true
-  }
-
   const getSymmetricMatrix = (matrix) => {
     const zeroArray = fill(Array(array.length), 0);
     const zeroMatrix = clone(zeroArray.map(() => zeroArray));
@@ -209,39 +177,18 @@ function Task3() {
     return zeroMatrix
   }
 
-  const checkReflectiveMatrix = (matrix) => {
-    const indexes = [...new Array(matrix.length)].map((n, index) => [index, index]);
-    let count = 0;
-    for (const indexe of indexes) {
-      if (matrix[indexe[0]][indexe[1]] === 1) {
-        count += 1;
-      }
-    }
-    return matrix.length === count;
-  }
-
-  const checkCompleteMatrix = (matrix) => {
-    for (let i = 0; i < matrix.length; i++) {
-      for (let j = 0; j < matrix[i].length; j++) {
-        if (!matrix[i][j]) {
-          return false;
-        }
-      }
-    }
-    return true;
-  }
-
   useEffect(() => {
     if (matrix.length) {
-      setGraph(generateGraph(matrix, array));
-
-      setIsReflectMatrix(checkReflectiveMatrix(matrix));
-      setIsSymmetricMatrix(checkSymmetricMatrix(matrix));
+      setGraph(GraphHelper.generateGraph(matrix, array));
       setSymmetricMatrix(getSymmetricMatrix(matrix));
-      setIsASymmetricMatrix(checkASymmetricMatrix(matrix));
-      setIsAntiSymmetricMatrix(checkAntiSymmetricMatrix(matrix));
+
+      setIsReflectMatrix(MatrixChecker.checkReflectiveMatrix(matrix));
+      setIsSymmetricMatrix(MatrixChecker.checkSymmetricMatrix(matrix));
+      setIsASymmetricMatrix(MatrixChecker.checkASymmetricMatrix(matrix));
+      setIsAntiSymmetricMatrix(MatrixChecker.checkAntiSymmetricMatrix(matrix));
+      setIsCompleteMatrix(MatrixChecker.checkCompleteMatrix(matrix));
+
       setIsTransitiveMatrix(checkTransitiveMatrix(matrix));
-      setIsCompleteMatrix(checkCompleteMatrix(matrix));
     }
   }, [matrix]);
 
@@ -311,22 +258,6 @@ function Task3() {
       }
     }
     return matrix;
-  }
-
-  const generateGraph = (matrix, namedArray) => {
-    const graph = {};
-    graph['nodes'] = namedArray.map(i => {
-      return {id: i, label: `${i}`}
-    });
-    graph['edges'] = [];
-    for (let i = 0; i < matrix.length; i++) {
-      for (let j = 0; j < matrix[i].length; j++) {
-        if (matrix[i][j] === 1) {
-          graph['edges'].push({from: namedArray[i], to: namedArray[j]})
-        }
-      }
-    }
-    return graph;
   }
 
   const handleChange = value => setComparator(value);
