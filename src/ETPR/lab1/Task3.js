@@ -51,7 +51,7 @@ function Task3() {
   const [diagonalMatrix, setDiagonalMatrix] = useState([]);
   const [compositionMatrixForTransitive, setCompositionMatrixForTransitive] = useState([]);
   const [binaryRelation, setBinaryRelation] = useState([]);
-  const [unionOfBinaryRelations, setUnionOfBinaryRelations] = useState([]);
+  const [resultOfOperationOnBinaryRelations, setResultOfOperationOnBinaryRelations] = useState([]);
   const [secondBinaryRelation, setSecondBinaryRelation] = useState([]);
   const [operation, setOperation] = useState(operationsObj.union);
   const [additionBinaryRelation, setAdditionBinaryRelation] = useState([]);
@@ -244,21 +244,8 @@ function Task3() {
     }
   }, [matrix]);
 
-  const getUnionOfBinaryRelation = (br1, br2) => {
-    const unionObj = {};
-    for (const b1 of br1) {
-      for (const b2 of br2) {
-        if (b1[0] !== b2[0] || b1[1] !== b2[1]) {
-          unionObj[`${b1[0]}${b1[1]}`] = b1;
-          unionObj[`${b2[0]}${b2[1]}`] = b2;
-        }
-      }
-    }
-    return Object.values(unionObj);
-  }
-
   useEffect(() => {
-    setUnionOfBinaryRelations(getUnionOfBinaryRelation(binaryRelation, secondBinaryRelation));
+    setResultOfOperationOnBinaryRelations(operationsObj[operation.value].brOperation(binaryRelation, secondBinaryRelation));
   }, [binaryRelation, secondBinaryRelation, operation]);
 
   const matrixIsSubset = (matrix, secondMatrix) => {
@@ -266,7 +253,7 @@ function Task3() {
     for (let i = 0; i < matrix.length; i++) {
       for (let j = 0; j < matrix[i].length; j++) {
         if (Boolean(matrix[i][j]) && (matrix[i][j] === secondMatrix[i][j])) {
-          matchCount+=1;
+          matchCount += 1;
         }
       }
     }
@@ -397,15 +384,15 @@ function Task3() {
       </div>
 
 
-       <div className="mb-5">
+      <div className="mb-5">
         <div className="mb-3">
           <i>1.6. Побудувати бінарні відношення, які є об’єднанням, перетином і різницею бінарних відношень: </i>
         </div>
-       <OperationSelector
-         initial={operation.value}
-         comparatorChanged={handleOperationChange}
-       />
-       <p className="mb-3">Бінарне відношення {binaryRelationToString(unionOfBinaryRelations)}</p>
+        <OperationSelector
+          initial={operation.value}
+          comparatorChanged={handleOperationChange}
+        />
+        <p className="mb-3">Бінарне відношення {binaryRelationToString(resultOfOperationOnBinaryRelations)}</p>
       </div>
 
       <div className="mb-5">
