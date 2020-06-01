@@ -5,18 +5,21 @@ import TextField from "@material-ui/core/TextField";
 import {makeStyles} from "@material-ui/core/styles";
 
 import fill from 'lodash/fill';
-import {product} from "iter-tools/es2015";
 import Graph from "react-graph-vis";
 import TeX from "@matejmazur/react-katex";
 import 'katex/dist/katex.min.css';
 
 import RelationSelector from "./relation-select/RelationSelector";
-import {comparatorsObj} from "./relation-select/comparators";
 import OperationSelector from "../../UI/operator-select/OperationSelector";
-import {operationsObj} from "../../UI/operator-select/operations";
-import {MatrixChecker} from "./helpers/matrix-checker";
+
 import {GraphHelper} from "./helpers/graph-helper";
 import {Transformer} from "./helpers/transformer";
+import {MatrixChecker} from "./helpers/matrix-checker";
+import {MatrixHelper} from "./helpers/MatrixHelper";
+import {BinaryRelation} from "./helpers/binary-relation";
+
+import {operationsObj} from "../../UI/operator-select/operations";
+import {comparatorsObj} from "./relation-select/comparators";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -71,15 +74,15 @@ function Task3() {
   const clone = (items) => items.map(item => Array.isArray(item) ? clone(item) : item);
 
   useEffect(() => {
-    setBinaryRelation(createBinaryRelation(array, is, comparator.value, false));
-    setSecondBinaryRelation(createBinaryRelation(array, is, secondComparator.value, false));
-    setAdditionBinaryRelation(createBinaryRelation(array, not, comparator.value, false));
-    setReverseBinaryRelation(createBinaryRelation(array, is, comparator.value, true));
-    setDualBinaryRelation(createBinaryRelation(array, not, comparator.value, true));
+    setBinaryRelation(BinaryRelation.createBinaryRelation(array, is, comparator.value, false));
+    setSecondBinaryRelation(BinaryRelation.createBinaryRelation(array, is, secondComparator.value, false));
+    setAdditionBinaryRelation(BinaryRelation.createBinaryRelation(array, not, comparator.value, false));
+    setReverseBinaryRelation(BinaryRelation.createBinaryRelation(array, is, comparator.value, true));
+    setDualBinaryRelation(BinaryRelation.createBinaryRelation(array, not, comparator.value, true));
 
     const zeroArray = fill(Array(array.length), 0);
     const zeroMatrix = clone(zeroArray.map(() => zeroArray));
-    setDiagonalMatrix(fillMatrix(zeroMatrix, comparatorsObj.eq.value));
+    setDiagonalMatrix(MatrixHelper.fillMatrix(zeroMatrix, comparatorsObj.eq.value));
   }, [comparator, secondComparator, array]);
 
   useEffect(() => {
@@ -89,75 +92,24 @@ function Task3() {
   useEffect(() => {
     const zeroArray = fill(Array(array.length), 0);
     const zeroMatrix = clone(zeroArray.map(() => zeroArray));
-    const filledMatrix = fillMatrix(zeroMatrix, secondComparator.value);
+    const filledMatrix = MatrixHelper.fillMatrix(zeroMatrix, secondComparator.value);
     setSecondMatrix(filledMatrix);
   }, [secondComparator, array]);
 
-  // https://stackoverflow.com/a/48694670/5774395
-  // math.multiply(math.matrix(matrix), math.matrix(secondMatrix));
-  const matrixDot = (A, B) => {
-    let result = new Array(A.length).fill(0).map(() => new Array(B[0].length).fill(0));
-    return result.map((row, i) => {
-      return row.map((val, j) => {
-        return A[i].reduce((sum, elm, k) => sum + (elm * B[k][j]), 0)
-      })
-    })
-  }
-
-  const compositionOfMatrix = (matrix, secondMatrix) => {
-    const BR1 = Transformer.matrixToBinaryRelation(matrix, array);
-    const BR2 = Transformer.matrixToBinaryRelation(secondMatrix, array);
-    const zeroArray = fill(Array(matrix.length), 0);
-    const zeroMatrix = clone(zeroArray.map(() => zeroArray));
-    for (const br1 of BR1) {
-      for (const br2 of BR2) {
-        if (br1[1] === br2[0]) {
-          zeroMatrix[array.indexOf(br1[0])][array.indexOf(br2[1])] = 1;
-        }
-      }
-    }
-    return zeroMatrix;
-  }
-
-  const binaryRelationsIncludes = (br1, br2) => {
-    let matchCount = 0;
-    for (const b1 of br1) {
-      for (const b2 of br2) {
-        if (b1[0] === b2[0] && b1[1] === b2[1]) {
-          matchCount += 1;
-        }
-      }
-    }
-    return br2.length === matchCount;
-  }
-
   const checkTransitiveMatrix = (matrix) => {
     if (matrix.length) {
-      const compositionOfBR = Transformer.matrixToBinaryRelation(compositionOfMatrix(matrix, matrix), array);
+      const compositionOfBR = Transformer.matrixToBinaryRelation(MatrixHelper.compositionOfMatrix(array, matrix, matrix), array);
       const br = Transformer.matrixToBinaryRelation(matrix, array);
       const compositionMatrix = Transformer.binaryRelationToMatrix(compositionOfBR, array);
       setCompositionMatrixForTransitive(compositionMatrix);
-      return binaryRelationsIncludes(br, compositionOfBR);
+      return BinaryRelation.binaryRelationsIncludes(br, compositionOfBR);
     }
-  }
-
-  const getSymmetricMatrix = (matrix) => {
-    const zeroArray = fill(Array(matrix.length), 0);
-    const zeroMatrix = clone(zeroArray.map(() => zeroArray));
-    for (let i = 0; i < matrix.length; i++) {
-      for (let j = 0; j < matrix[i].length; j++) {
-        if (matrix[i][j]) {
-          zeroMatrix[j][i] = 1;
-        }
-      }
-    }
-    return zeroMatrix
   }
 
   useEffect(() => {
     if (matrix.length) {
       setGraph(GraphHelper.generateGraph(matrix, array));
-      setSymmetricMatrix(getSymmetricMatrix(matrix));
+      setSymmetricMatrix(MatrixHelper.getSymmetricMatrix(matrix));
 
       setIsReflectMatrix(MatrixChecker.checkReflectiveMatrix(matrix));
       setIsSymmetricMatrix(MatrixChecker.checkSymmetricMatrix(matrix));
@@ -175,38 +127,10 @@ function Task3() {
 
   useEffect(() => {
     if (matrix.length) {
-      setResultMatrix(compositionOfMatrix(matrix, secondMatrix));
+      setResultMatrix(MatrixHelper.compositionOfMatrix(array, matrix, secondMatrix));
       setIsSubsetMatrix(MatrixChecker.matrixIsSubset(binaryRelation, matrix, secondMatrix));
     }
   }, [matrix, secondMatrix]);
-
-
-  const createBinaryRelation = (array, predicate, comparator, isReverse) => {
-    const bR = [];
-    const cartesianProduct = Array.from(product(array, array));
-    for (let i = 0; i < cartesianProduct.length; i++) {
-      if (predicate(comparatorsObj[comparator].func(cartesianProduct[i][0], cartesianProduct[i][1]))) {
-        if (isReverse) {
-          bR.push(cartesianProduct[i].reverse());
-        } else {
-          bR.push(cartesianProduct[i]);
-        }
-      }
-    }
-    return bR;
-  }
-
-  const fillMatrix = (zeroMatrix, comparator) => {
-    const copy = clone(zeroMatrix);
-    for (let i = 0; i < copy.length; i++) {
-      for (let j = 0; j < copy[i].length; j++) {
-        if (comparatorsObj[comparator].func(i, j)) {
-          copy[i][j] = 1;
-        }
-      }
-    }
-    return copy;
-  }
 
   const handleChange = value => setComparator(value);
   const handleOperationChange = value => setOperation(value);
