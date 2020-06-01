@@ -37,7 +37,7 @@ function RelationSelector({initial, comparatorChanged}) {
         onChange={handleChange}
       >
         {keys.map(c => (
-          <MenuItem value={comparatorsObj[c].value}>
+          <MenuItem value={comparatorsObj[c].value} key={comparatorsObj[c].value}>
             <TeX className="mr-1" math={comparatorsObj[c].math}/>- {comparatorsObj[c].label}
           </MenuItem>
         ))}

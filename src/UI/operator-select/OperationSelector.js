@@ -20,7 +20,7 @@ const useStyles = makeStyles(theme => ({
 
 function OperationSelector({initial, comparatorChanged}) {
   const classes = useStyles();
-  const handleChange = event => comparatorChanged(event.target.value);
+  const handleChange = event => comparatorChanged(operationsObj[event.target.value]);
   const keys = Object.keys(operationsObj);
 
   return (
@@ -33,7 +33,7 @@ function OperationSelector({initial, comparatorChanged}) {
         onChange={handleChange}
       >
         {keys.map(o => (
-          <MenuItem value={operationsObj[o].value}>
+          <MenuItem value={operationsObj[o].value} key={operationsObj[o].value}>
             <TeX className="mr-1" math={operationsObj[o].math}/>- {operationsObj[o].label}
           </MenuItem>
         ))}
