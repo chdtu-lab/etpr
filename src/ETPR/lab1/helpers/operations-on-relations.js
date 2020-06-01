@@ -23,4 +23,15 @@ export class OperationsOnRelations {
     }
     return intersection;
   }
+
+  static getDifferenceOfBinaryRelation = (br1, br2) => {
+    const difference = [];
+    for (const br1Element of br1) {
+      const index = br2.findIndex(i => i[0] === br1Element[0] && i[1] === br1Element[1]);
+      if (index === -1) {
+        difference.push(br1Element);
+      }
+    }
+    return difference;
+  }
 }

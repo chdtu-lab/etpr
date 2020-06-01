@@ -20,6 +20,6 @@ export const operationsObj = {
     math: String.raw`A \setminus B`,
     label: 'Різниця',
     selector: [String.raw`(A)\(A∩B)`],
-    brOperation: OperationsOnRelations.getIntersectionOfBinaryRelation
+    brOperation: OperationsOnRelations.getDifferenceOfBinaryRelation
   },
 }

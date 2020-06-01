@@ -14,6 +14,7 @@ import RelationSelector from "./relation-select/RelationSelector";
 import {comparatorsObj} from "./relation-select/comparators";
 import OperationSelector from "../../UI/operator-select/OperationSelector";
 import {operationsObj} from "../../UI/operator-select/operations";
+import {OperationsOnRelations} from "./helpers/operations-on-relations";
 
 const useStyles = makeStyles(theme => ({
   root: {
