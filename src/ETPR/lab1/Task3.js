@@ -119,7 +119,7 @@ function Task3() {
   }
 
   const binaryRelationToMatrix = (br) => {
-    const zeroArray = fill(Array(array.length), 0);
+    const zeroArray = fill(Array([...new Set(br.flat())].length), 0);
     const zeroMatrix = clone(zeroArray.map(() => zeroArray));
     for (const b of br) {
       zeroMatrix[array.indexOf(b[0])][array.indexOf(b[1])] = 1;
@@ -130,7 +130,7 @@ function Task3() {
   const compositionOfMatrix = (matrix, secondMatrix) => {
     const BR1 = matrixToBinaryRelation(matrix);
     const BR2 = matrixToBinaryRelation(secondMatrix);
-    const zeroArray = fill(Array(array.length), 0);
+    const zeroArray = fill(Array(matrix.length), 0);
     const zeroMatrix = clone(zeroArray.map(() => zeroArray));
     for (const br1 of BR1) {
       for (const br2 of BR2) {
@@ -165,7 +165,7 @@ function Task3() {
   }
 
   const getSymmetricMatrix = (matrix) => {
-    const zeroArray = fill(Array(array.length), 0);
+    const zeroArray = fill(Array(matrix.length), 0);
     const zeroMatrix = clone(zeroArray.map(() => zeroArray));
     for (let i = 0; i < matrix.length; i++) {
       for (let j = 0; j < matrix[i].length; j++) {
