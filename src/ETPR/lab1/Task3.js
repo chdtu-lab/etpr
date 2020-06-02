@@ -115,7 +115,7 @@ function Task3() {
       setIsSymmetricMatrix(MatrixChecker.checkSymmetricMatrix(matrix));
       setIsASymmetricMatrix(MatrixChecker.checkASymmetricMatrix(matrix));
       setIsAntiSymmetricMatrix(MatrixChecker.checkAntiSymmetricMatrix(matrix));
-      setIsCompleteMatrix(MatrixChecker.checkCompleteMatrix(matrix));
+      // setIsCompleteMatrix(MatrixChecker.checkCompleteMatrix(matrix));
 
       setIsTransitiveMatrix(checkTransitiveMatrix(matrix));
     }
@@ -253,7 +253,7 @@ function Task3() {
 
       <p className="mb-5">{`Дане відношення  ${!isASymmetricMatrix ? 'циклічне' : 'не циклічне'}`}</p>
       <p className="mb-5">{`Дане відношення  ${isASymmetricMatrix ? 'ациклічне' : 'не ациклічне'}`}</p>
-      <p className="mb-5">{`Дане відношення  ${isCompleteMatrix ? 'зв’язне' : 'не зв’язне'}`}</p>
+      <p className="mb-5">{`Дане відношення  ${comparatorsObj[comparator.value].isComplete ? 'зв’язне' : 'не зв’язне'}`}</p>
 
       <p className="m-3">1.9) Композіція бінарних відношень:</p>
       <div className="flex items-center">
