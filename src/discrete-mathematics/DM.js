@@ -1,11 +1,11 @@
 import React from "react";
-import SimpleExpansionPanel from "../UI/SimpleExpansionPanel";
+
+import {Venn} from "react-venn-selectable";
+
 import Info from "./Info";
-import SetCalculator from "./SetCalculator";
 import DMTask1 from "./DMTask1";
-import SelectableVenn from "./Venn/SelectableVenn";
-// import SimpleVenn from "./SimpleVenn";
-import SelectableVennClass from "./Venn/SelectableVennClass";
+import SetCalculator from "./SetCalculator";
+import SimpleExpansionPanel from "../UI/SimpleExpansionPanel";
 
 export default function DM() {
   const sets2 = [
@@ -34,9 +34,9 @@ export default function DM() {
       </SimpleExpansionPanel>
       <SetCalculator/>
       <DMTask1/>
-      <SelectableVennClass sets={sets2} selectors={selectors2}/>
-      <SelectableVenn sets={sets3}/>
-      {/*<SimpleVenn/>*/}
+      
+      <Venn sets={sets3}/>
+      <Venn sets={sets2} selectors={selectors2} />
     </>
   );
 }

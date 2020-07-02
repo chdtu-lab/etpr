@@ -4,9 +4,9 @@ import TextField from "@material-ui/core/TextField";
 import {makeStyles} from "@material-ui/core/styles";
 
 import Zet from "zet";
+import {Venn} from "react-venn-selectable";
 import {useDebouncedCallback} from "use-debounce";
 
-import SelectableVenn from "./Venn/SelectableVenn";
 import OperationSelector from "../UI/operator-select/OperationSelector";
 import {operationsObj} from "../UI/operator-select/operations";
 
@@ -64,7 +64,7 @@ export default function SetCalculator() {
         />
       </form>
       <div>{resultC}</div>
-      <SelectableVenn sets={sets} selectors={operation.selector}/>
+      <Venn sets={sets} selectors={operation.selector}/>
     </div>
   );
 }
